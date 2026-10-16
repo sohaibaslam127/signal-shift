@@ -46,10 +46,10 @@ Status legend: `[x]` done and validated, `[~]` partially done (see notes), `[ ]`
 
 ## Milestone 4 — 60-level campaign
 
-- [ ] `tools/generate_levels.gd`: seeded, deterministic level designer. Every level is verified by `PuzzleValidator` before it is written; output is committed as static JSON.
-- [ ] Difficulty curve per spec (1–10 basics … 51–60 combinations), 6 chapters of 10.
-- [ ] `resources/puzzles/campaign/campaign.json` — 60 verified puzzles.
-- [ ] Test: every shipped puzzle validates.
+- [x] `tools/generate_levels.gd`: seeded, deterministic level designer. Every level is verified by `PuzzleValidator` before it is written; output is committed as static JSON.
+- [x] Difficulty curve per spec (1–10 basics … 51–60 combinations), 6 chapters of 10.
+- [x] `resources/puzzles/campaign/campaign.json` — 60 verified puzzles.
+- [x] Test: every shipped puzzle validates.
 
 ## Milestone 5 — Level select, undo, reset, saving, settings
 
