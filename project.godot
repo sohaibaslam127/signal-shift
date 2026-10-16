@@ -14,11 +14,11 @@ config/name="Signal Shift"
 config/description="Connect the signal. Outsmart the grid."
 config/version="0.1.0"
 run/main_scene="res://scenes/boot/boot.tscn"
+config/quit_on_go_back=false
 config/features=PackedStringArray("4.7", "GL Compatibility")
 boot_splash/bg_color=Color(0.039, 0.059, 0.122, 1)
 boot_splash/show_image=false
 config/icon="res://icon.svg"
-config/quit_on_go_back=false
 
 [autoload]
 
@@ -46,16 +46,6 @@ window/handheld/orientation=1
 theme/custom="res://resources/themes/signal_theme.tres"
 common/drop_mouse_on_gui_input_disabled=true
 
-[input_devices]
-
-pointing/emulate_mouse_from_touch=true
-
-[signal_shift]
-
-ads_backend_script=""
-purchase_backend_script=""
-privacy_policy_url="https://github.com/sohaibaslam127/signal-shift/blob/main/docs/PRIVACY_POLICY.md"
-
 [physics]
 
 3d/physics_engine="Jolt Physics"
@@ -64,5 +54,11 @@ privacy_policy_url="https://github.com/sohaibaslam127/signal-shift/blob/main/doc
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-environment/defaults/default_clear_color=Color(0.039, 0.059, 0.122, 1)
 textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0.039, 0.059, 0.122, 1)
+
+[signal_shift]
+
+ads_backend_script=""
+purchase_backend_script=""
+privacy_policy_url="https://github.com/sohaibaslam127/signal-shift/blob/main/docs/PRIVACY_POLICY.md"
