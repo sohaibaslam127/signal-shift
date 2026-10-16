@@ -4,8 +4,10 @@
 [ext_resource type="Script" path="res://scripts/ui/circuit_background.gd" id="2_bg"]
 [ext_resource type="Script" path="res://scripts/ui/safe_area_container.gd" id="3_safe"]
 [ext_resource type="Script" path="res://scripts/ui/logo_mark.gd" id="4_logo"]
-[ext_resource type="PackedScene" path="res://scenes/components/primary_button.tscn" id="5_primary"]
-[ext_resource type="PackedScene" path="res://scenes/components/secondary_button.tscn" id="6_secondary"]
+[ext_resource type="PackedScene" path="res://scenes/components/icon_button.tscn" id="6_icon"]
+[ext_resource type="Script" path="res://scripts/ui/title_mark.gd" id="7_title"]
+[ext_resource type="Script" path="res://scripts/ui/menu_pill.gd" id="8_pill"]
+[ext_resource type="Script" path="res://scripts/ui/menu_card.gd" id="9_card"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -25,6 +27,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("2_bg")
+scenic = true
 
 [node name="Safe" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -37,28 +40,56 @@ script = ExtResource("3_safe")
 
 [node name="Column" type="VBoxContainer" parent="Safe"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 14
 
-[node name="TopSpacer" type="Control" parent="Safe/Column"]
+[node name="TopBar" type="HBoxContainer" parent="Safe/Column"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="LevelPill" type="Button" parent="Safe/Column/TopBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(290, 84)
+layout_mode = 2
+theme_type_variation = &"PillButton"
+script = ExtResource("8_pill")
+title = "Level 1"
+
+[node name="TopSpacer" type="Control" parent="Safe/Column/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="HintPill" type="Button" parent="Safe/Column/TopBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 84)
+layout_mode = 2
+theme_type_variation = &"PillButton"
+script = ExtResource("8_pill")
+icon_name = &"gift"
+icon_color = Color(0.807843, 0.607843, 1, 1)
+title = "Free Hint"
+
+[node name="LogoSpacer" type="Control" parent="Safe/Column"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
 [node name="Logo" type="Control" parent="Safe/Column"]
-custom_minimum_size = Vector2(0, 200)
+custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("4_logo")
 
-[node name="Title" type="Label" parent="Safe/Column"]
+[node name="Title" type="Control" parent="Safe/Column"]
+custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
-theme_type_variation = &"TitleLabel"
-text = "SIGNAL SHIFT"
-horizontal_alignment = 1
+mouse_filter = 2
+script = ExtResource("7_title")
 
 [node name="Tagline" type="Label" parent="Safe/Column"]
 layout_mode = 2
-theme_type_variation = &"DimLabel"
+theme_override_colors/font_color = Color(0.8, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 32
 text = "Connect the signal. Outsmart the grid."
 horizontal_alignment = 1
 
@@ -69,51 +100,91 @@ mouse_filter = 2
 
 [node name="Buttons" type="VBoxContainer" parent="Safe/Column"]
 layout_mode = 2
-size_flags_horizontal = 4
-theme_override_constants/separation = 18
+theme_override_constants/separation = 20
 
-[node name="ContinueButton" parent="Safe/Column/Buttons" instance=ExtResource("5_primary")]
+[node name="ContinueButton" parent="Safe/Column/Buttons" instance=ExtResource("6_icon")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(520, 110)
+custom_minimum_size = Vector2(0, 136)
 layout_mode = 2
+theme_type_variation = &"HeroButton"
 text = "Play"
+icon_name = &"play"
+show_chevron = true
+gloss = true
 
-[node name="DailyButton" parent="Safe/Column/Buttons" instance=ExtResource("6_secondary")]
+[node name="DailyButton" type="Button" parent="Safe/Column/Buttons"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(520, 96)
+custom_minimum_size = Vector2(0, 124)
 layout_mode = 2
 theme_type_variation = &"AccentButton"
-text = "Daily Puzzle"
+script = ExtResource("9_card")
+title = "Daily Puzzle"
+subtitle = "New puzzle available!"
+chip_text = "Today"
 
-[node name="DailyStatus" type="Label" parent="Safe/Column/Buttons"]
+[node name="RewardRow" type="Button" parent="Safe/Column/Buttons"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 96)
 layout_mode = 2
-theme_type_variation = &"DimLabel"
-text = "A new puzzle every day"
-horizontal_alignment = 1
+theme_type_variation = &"CardButton"
+script = ExtResource("9_card")
+icon_name = &"gift"
+icon_color = Color(0.247059, 0.941176, 0.768627, 1)
+title = "Solve it for +1 free hint"
+chip_text = "Play"
+chip_style = 1
+show_chevron = false
+title_size = 30
 
-[node name="LevelsButton" parent="Safe/Column/Buttons" instance=ExtResource("6_secondary")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(520, 96)
-layout_mode = 2
-text = "Levels"
-
-[node name="PacksButton" parent="Safe/Column/Buttons" instance=ExtResource("6_secondary")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(520, 96)
-layout_mode = 2
-text = "Puzzle Packs"
-
-[node name="SettingsButton" parent="Safe/Column/Buttons" instance=ExtResource("6_secondary")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(520, 96)
-layout_mode = 2
-text = "Settings"
-
-[node name="BottomSpacer" type="Control" parent="Safe/Column"]
+[node name="NavSpacer" type="Control" parent="Safe/Column"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
+
+[node name="NavBar" type="PanelContainer" parent="Safe/Column"]
+layout_mode = 2
+theme_type_variation = &"NavPanel"
+
+[node name="Row" type="HBoxContainer" parent="Safe/Column/NavBar"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="LevelsButton" parent="Safe/Column/NavBar/Row" instance=ExtResource("6_icon")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 124)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"NavButton"
+icon_name = &"levels"
+caption = "Levels"
+selected = true
+flat_face = true
+
+[node name="Divider1" type="VSeparator" parent="Safe/Column/NavBar/Row"]
+layout_mode = 2
+
+[node name="PacksButton" parent="Safe/Column/NavBar/Row" instance=ExtResource("6_icon")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 124)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"NavButton"
+icon_name = &"packs"
+caption = "Packs"
+flat_face = true
+
+[node name="Divider2" type="VSeparator" parent="Safe/Column/NavBar/Row"]
+layout_mode = 2
+
+[node name="SettingsButton" parent="Safe/Column/NavBar/Row" instance=ExtResource("6_icon")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 124)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"NavButton"
+icon_name = &"settings"
+caption = "Settings"
+flat_face = true
 
 [node name="Version" type="Label" parent="Safe/Column"]
 unique_name_in_owner = true

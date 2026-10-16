@@ -10,7 +10,7 @@ var _note: Label
 func _init() -> void:
 	add_theme_constant_override("separation", 10)
 	_stars = StarRating.new()
-	_stars.custom_minimum_size = Vector2(320, 96)
+	_stars.custom_minimum_size = Vector2(380, 130)
 	_stars.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	add_child(_stars)
 	_summary = Label.new()

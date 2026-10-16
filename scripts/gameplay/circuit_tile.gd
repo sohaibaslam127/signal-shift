@@ -119,60 +119,93 @@ func _gui_input(event: InputEvent) -> void:
 
 func _draw() -> void:
 	var s := minf(size.x, size.y)
-	var inset := s * 0.04
+	var inset := s * 0.045
+	var lip := s * 0.045
 	var rect := Rect2(Vector2(inset, inset) + Vector2(_shake, 0), size - Vector2(inset, inset) * 2.0)
-
-	# Cell background.
-	match tile_type:
-		TileTypes.Type.BLOCKED:
-			_box.bg_color = Palette.TILE_BLOCKED
-			_box.border_color = Palette.PANEL
-		_:
-			_box.bg_color = Palette.TILE_FIXED if is_fixed else Palette.TILE_BASE
-			_box.border_color = Palette.PANEL_BORDER if not hinted else Palette.WARNING
-	_box.set_border_width_all(4 if hinted else 2)
-	draw_style_box(_box, rect)
+	var radius := int(s * 0.16)
+	_box.set_corner_radius_all(radius)
 
 	if tile_type == TileTypes.Type.BLOCKED:
 		_draw_blocked(rect)
 		return
+
+	# Rotatable tiles are raised (face on a darker lip); fixed tiles sit flat and recessed.
+	var face := rect
+	if not is_fixed:
+		face.size.y -= lip
+		_box.bg_color = Palette.PANEL_SHADOW
+		_box.set_border_width_all(0)
+		draw_style_box(_box, Rect2(rect.position + Vector2(0, lip), face.size))
+	_box.bg_color = Palette.TILE_FIXED if is_fixed else Palette.TILE_BASE
+	_box.border_color = Palette.TILE_TOP if not is_fixed else Color(Palette.PANEL_BORDER, 0.5)
+	_box.set_border_width_all(0 if not is_fixed else 2)
+	if not is_fixed:
+		_box.border_width_top = maxi(2, int(s * 0.025))
+	draw_style_box(_box, face)
+	if hinted:
+		_box.draw_center = false
+		_box.border_color = Palette.WARNING
+		_box.set_border_width_all(maxi(3, int(s * 0.035)))
+		draw_style_box(_box, face.grow(s * 0.01))
+		_box.draw_center = true
+
+	if is_fixed:
+		_draw_fixed_marks(face, s)
 	if tile_type == TileTypes.Type.EMPTY:
 		return
 
+	# Traces stay on the cell centre so they line up with neighbours regardless of the lip.
 	var center := size * 0.5 + Vector2(_shake, 0)
 	draw_set_transform(center, _spin, Vector2.ONE)
 	var half := s * 0.5
-	var line_color := _line_color()
-	var width := s * (0.17 if powered else 0.13)
+	var width := s * 0.15
+	var glow := _pulse if not powered else 0.55 + 0.45 * _pulse
 
-	# Glow underlay for powered tiles and the travelling pulse.
+	# Recessed groove the trace sits in, then the trace itself.
+	_draw_traces(half, width * 1.45, Color(Palette.PANEL_SHADOW, 0.85))
 	if powered or _pulse > 0.0:
-		var glow := Color(Palette.SUCCESS if solved else Palette.SIGNAL, 0.22 + 0.4 * _pulse)
-		_draw_traces(half, width * 2.0, glow)
-	_draw_traces(half, width, line_color)
+		var glow_color := Palette.SUCCESS if solved else Palette.SIGNAL
+		_draw_traces(half, width * 2.6, Color(glow_color, 0.10 * glow))
+		_draw_traces(half, width * 1.7, Color(glow_color, 0.22 * glow))
+	_draw_traces(half, width, _line_color())
 	if powered:
 		# Bright core line: a shape cue for powered state that does not rely on colour alone.
-		_draw_traces(half, width * 0.32, Color(Palette.TEXT, 0.85))
+		_draw_traces(half, width * 0.34, Color(Palette.TEXT, 0.9))
 
 	match tile_type:
 		TileTypes.Type.SOURCE:
-			draw_circle(Vector2.ZERO, s * 0.24, Palette.SIGNAL)
-			draw_circle(Vector2.ZERO, s * 0.13, Palette.TEXT)
+			_draw_source(s)
 		TileTypes.Type.DESTINATION:
-			var ring_color := Palette.SUCCESS if powered else Palette.CIRCUIT_IDLE
-			draw_circle(Vector2.ZERO, s * 0.25, Palette.TILE_BASE)
-			draw_arc(Vector2.ZERO, s * 0.22, 0.0, TAU, 40, ring_color, s * 0.07, true)
-			if powered:
-				draw_circle(Vector2.ZERO, s * 0.11, Palette.SUCCESS)
+			_draw_destination(s)
 		_:
 			if connections != 0:
-				draw_circle(Vector2.ZERO, width * 0.62, line_color)
+				draw_circle(Vector2.ZERO, width * 0.7, _line_color())
 				if powered:
-					draw_circle(Vector2.ZERO, width * 0.3, Palette.TEXT)
+					draw_circle(Vector2.ZERO, width * 0.32, Palette.TEXT)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
-	if is_fixed:
-		_draw_fixed_marks(rect, s)
+
+func _draw_source(s: float) -> void:
+	var halo := s * (0.95 + 0.15 * _pulse)
+	draw_texture_rect(Palette.glow_texture(), Rect2(Vector2(-halo, -halo) * 0.5, Vector2(halo, halo)), false, Color(Palette.SIGNAL, 0.55))
+	draw_circle(Vector2.ZERO, s * 0.25, Palette.PANEL_SHADOW)
+	draw_circle(Vector2.ZERO, s * 0.21, Palette.SIGNAL)
+	draw_arc(Vector2.ZERO, s * 0.21, PI * 1.1, PI * 1.6, 12, Color(Palette.SIGNAL_GLOW, 0.9), s * 0.03, true)
+	draw_circle(Vector2.ZERO, s * 0.1, Palette.TEXT)
+
+
+func _draw_destination(s: float) -> void:
+	var lit := Palette.SUCCESS if powered else Palette.CIRCUIT_IDLE
+	if powered:
+		var halo := s * (0.95 + 0.2 * _pulse)
+		draw_texture_rect(Palette.glow_texture(), Rect2(Vector2(-halo, -halo) * 0.5, Vector2(halo, halo)), false, Color(Palette.SUCCESS, 0.6))
+	draw_circle(Vector2.ZERO, s * 0.27, Palette.PANEL_SHADOW)
+	draw_arc(Vector2.ZERO, s * 0.205, 0.0, TAU, 48, lit, s * 0.07, true)
+	if powered:
+		draw_circle(Vector2.ZERO, s * 0.12, Palette.SUCCESS)
+		draw_circle(Vector2.ZERO, s * 0.055, Palette.TEXT)
+	else:
+		draw_circle(Vector2.ZERO, s * 0.06, Color(Palette.CIRCUIT_IDLE, 0.7))
 
 
 func _line_color() -> Color:
@@ -180,7 +213,7 @@ func _line_color() -> Color:
 		return Palette.SUCCESS
 	if powered:
 		return Palette.SIGNAL
-	return Palette.CIRCUIT_IDLE if not is_fixed else Palette.CIRCUIT_IDLE.darkened(0.15)
+	return Palette.CIRCUIT_IDLE if not is_fixed else Palette.CIRCUIT_IDLE.darkened(0.2)
 
 
 ## Draws a trace from the centre to each connected edge, in tile-local (centred) coordinates.
@@ -194,17 +227,25 @@ func _draw_traces(half: float, width: float, color: Color) -> void:
 
 
 func _draw_blocked(rect: Rect2) -> void:
-	var color := Color(Palette.PANEL_BORDER, 0.8)
-	var a := rect.position + rect.size * 0.3
-	var b := rect.position + rect.size * 0.7
-	draw_line(a, b, color, 4.0, true)
-	draw_line(Vector2(a.x, b.y), Vector2(b.x, a.y), color, 4.0, true)
+	_box.bg_color = Palette.TILE_BLOCKED
+	_box.border_color = Color(Palette.PANEL_BORDER, 0.35)
+	_box.set_border_width_all(2)
+	draw_style_box(_box, rect)
+	# Diagonal hazard hatching clipped to the inner square.
+	var color := Color(Palette.PANEL_BORDER, 0.45)
+	var inner := rect.grow(-rect.size.x * 0.22)
+	var step := inner.size.x / 4.0
+	for i in range(1, 8):
+		var t := i * step
+		var a := inner.position + Vector2(maxf(0.0, t - inner.size.x), minf(t, inner.size.y))
+		var b := inner.position + Vector2(minf(t, inner.size.x), maxf(0.0, t - inner.size.y))
+		draw_line(a, b, color, 3.0, true)
 
 
 ## Four small corner rivets mark tiles that cannot rotate.
 func _draw_fixed_marks(rect: Rect2, s: float) -> void:
 	var r := s * 0.035
 	var pad := s * 0.11
-	var color := Palette.TEXT_DIM
 	for corner in [Vector2(pad, pad), Vector2(rect.size.x - pad, pad), Vector2(pad, rect.size.y - pad), rect.size - Vector2(pad, pad)]:
-		draw_circle(rect.position + corner, r, color)
+		draw_circle(rect.position + corner + Vector2(0, 1.5), r, Palette.PANEL_SHADOW)
+		draw_circle(rect.position + corner, r, Palette.TEXT_DIM)

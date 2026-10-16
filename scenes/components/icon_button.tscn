@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/icon_button.gd" id="1_icon"]
+
+[node name="IconButton" type="Button"]
+custom_minimum_size = Vector2(104, 104)
+theme_type_variation = &"HudButton"
+script = ExtResource("1_icon")

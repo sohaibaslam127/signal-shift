@@ -54,7 +54,7 @@ func handle_back() -> void:
 
 func _add_section(title: String) -> void:
 	var label := Label.new()
-	label.theme_type_variation = &"DimLabel"
+	label.theme_type_variation = &"CaptionLabel"
 	label.text = title.to_upper()
 	_rows.add_child(label)
 
@@ -80,26 +80,16 @@ func _add_toggle(title: String, initial: bool, apply: Callable, description: Str
 		hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		hint.text = description
 		text_box.add_child(hint)
-	var toggle := Button.new()
-	toggle.toggle_mode = true
+	var toggle := ToggleSwitch.new()
 	toggle.button_pressed = initial
-	toggle.custom_minimum_size = Vector2(170, 88)
 	toggle.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	_style_toggle(toggle)
 	toggle.toggled.connect(func(on: bool) -> void:
 		apply.call(on)
-		_style_toggle(toggle)
 		SaveService.save_progress()
 		SignalBus.settings_changed.emit()
 		AudioService.play(&"button")
 		AudioService.haptic(10))
 	row.add_child(toggle)
-
-
-func _style_toggle(toggle: Button) -> void:
-	toggle.text = "On" if toggle.button_pressed else "Off"
-	toggle.theme_type_variation = &"PrimaryButton" if toggle.button_pressed else &""
-	toggle.tooltip_text = toggle.text
 
 
 func _add_action(title: String, action: Callable) -> Button:

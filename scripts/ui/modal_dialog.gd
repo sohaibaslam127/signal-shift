@@ -20,7 +20,7 @@ func _init() -> void:
 	visible = false
 
 	var backdrop := ColorRect.new()
-	backdrop.color = Color(Palette.BACKGROUND_DEEP, 0.78)
+	backdrop.color = Color(Palette.BACKGROUND_DEEP, 0.85)
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	backdrop.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(backdrop)
@@ -32,7 +32,7 @@ func _init() -> void:
 
 	_panel = PanelContainer.new()
 	_panel.theme_type_variation = &"DialogPanel"
-	_panel.custom_minimum_size = Vector2(580, 0)
+	_panel.custom_minimum_size = Vector2(600, 0)
 	center.add_child(_panel)
 
 	var column := VBoxContainer.new()
@@ -41,6 +41,7 @@ func _init() -> void:
 
 	_title = Label.new()
 	_title.theme_type_variation = &"HeadingLabel"
+	_title.add_theme_font_size_override("font_size", 48)
 	_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(_title)
@@ -83,7 +84,7 @@ func add_button(text: String, action: Callable, variation: StringName = &"") -> 
 	button.text = text
 	if variation != &"":
 		button.theme_type_variation = variation
-	button.custom_minimum_size = Vector2(0, 100)
+	button.custom_minimum_size = Vector2(0, 108)
 	button.pressed.connect(func() -> void:
 		close()
 		if action.is_valid():

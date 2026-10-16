@@ -1,9 +1,9 @@
 [gd_scene format=3]
 
+[ext_resource type="PackedScene" path="res://scenes/components/icon_button.tscn" id="icon_btn"]
 [ext_resource type="Script" path="res://scripts/ui/settings.gd" id="1_settings"]
 [ext_resource type="Script" path="res://scripts/ui/circuit_background.gd" id="2_bg"]
 [ext_resource type="Script" path="res://scripts/ui/safe_area_container.gd" id="3_safe"]
-[ext_resource type="PackedScene" path="res://scenes/components/secondary_button.tscn" id="4_button"]
 [ext_resource type="PackedScene" path="res://scenes/components/dialog.tscn" id="5_dialog"]
 
 [node name="Settings" type="Control"]
@@ -41,13 +41,15 @@ theme_override_constants/separation = 20
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="BackButton" parent="Safe/Column/Header" instance=ExtResource("4_button")]
+[node name="BackButton" parent="Safe/Column/Header" instance=ExtResource("icon_btn")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 96)
 layout_mode = 2
 size_flags_horizontal = 0
-theme_type_variation = &"HudButton"
-text = "Back"
+size_flags_vertical = 4
+tooltip_text = "Back"
+theme_type_variation = &"RoundButton"
+icon_name = &"back"
+flat_face = true
 
 [node name="Title" type="Label" parent="Safe/Column/Header"]
 layout_mode = 2
@@ -57,7 +59,7 @@ text = "Settings"
 horizontal_alignment = 1
 
 [node name="HeaderBalance" type="Control" parent="Safe/Column/Header"]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(104, 0)
 layout_mode = 2
 mouse_filter = 2
 

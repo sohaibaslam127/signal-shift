@@ -24,41 +24,37 @@ func configure(number: int, earned_stars: int, is_locked: bool, is_completed: bo
 	completed = is_completed
 	current = is_current
 	disabled = locked
+	theme_type_variation = &"PrimaryButton" if current and not locked else &"LevelButton"
 	tooltip_text = "Level %d (locked)" % number if locked else "Level %d" % number
 	queue_redraw()
 
 
 func _draw() -> void:
 	var font := get_theme_font(&"font")
+	var pressed_now := get_draw_mode() == DRAW_PRESSED or get_draw_mode() == DRAW_HOVER_PRESSED
+	var drop := 6.0 if pressed_now else 0.0
 	var center_x := size.x * 0.5
-	if current and not locked:
-		var ring := StyleBoxFlat.new()
-		ring.draw_center = false
-		ring.border_color = Palette.SIGNAL
-		ring.set_border_width_all(3)
-		ring.set_corner_radius_all(16)
-		draw_style_box(ring, Rect2(Vector2.ZERO, size))
 	if locked:
-		_draw_lock(Vector2(center_x, size.y * 0.45), size.x * 0.16)
+		_draw_lock(Vector2(center_x, size.y * 0.44), size.x * 0.14)
 		return
-	var font_size := 34
+	var font_size := 38
 	var number := str(level_number)
 	var text_size := font.get_string_size(number, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
-	var color := Palette.SUCCESS if completed else Palette.TEXT
-	draw_string(font, Vector2(center_x - text_size.x * 0.5, size.y * 0.5), number, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
-	var star_r := size.x * 0.075
+	var color := Palette.BACKGROUND_DEEP if current else Palette.TEXT
+	draw_string(font, Vector2(center_x - text_size.x * 0.5, size.y * 0.47 + drop), number, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
+	var star_r := size.x * 0.085
 	for i in 3:
-		var c := Vector2(center_x + (i - 1) * star_r * 2.6, size.y * 0.76)
-		var points := _star(c, star_r, star_r * 0.45)
+		var c := Vector2(center_x + (i - 1) * star_r * 2.5, size.y * 0.7 + drop - (star_r * 0.35 if i == 1 else 0.0))
+		var points := _star(c, star_r, star_r * 0.48)
 		if i < stars:
-			draw_colored_polygon(points, Palette.WARNING)
+			draw_colored_polygon(points, Palette.BACKGROUND_DEEP if current else Palette.WARNING)
 		else:
 			points.append(points[0])
-			draw_polyline(points, Palette.TEXT_DISABLED, 1.5, true)
+			draw_polyline(points, Color(Palette.BACKGROUND_DEEP, 0.4) if current else Palette.TEXT_DISABLED, 2.0, true)
 
 
 func _draw_lock(c: Vector2, r: float) -> void:
-	var color := Palette.TEXT_DISABLED
+	var color := Color(Palette.TEXT_DISABLED, 0.9)
 	draw_arc(c + Vector2(0, -r * 0.35), r * 0.62, PI, TAU, 16, color, r * 0.22, true)
 	draw_rect(Rect2(c + Vector2(-r, -r * 0.3), Vector2(r * 2.0, r * 1.5)), color)
 

@@ -6,7 +6,7 @@ const COLUMNS := 5
 
 @onready var _back: Button = %BackButton
 @onready var _title: Label = %Title
-@onready var _star_total: Label = %StarTotal
+@onready var _star_total: MenuPill = %StarTotal
 @onready var _scroll: ScrollContainer = %Scroll
 @onready var _chapters: VBoxContainer = %Chapters
 
@@ -21,7 +21,9 @@ func _ready() -> void:
 	_back.pressed.connect(handle_back)
 	_title.text = "Levels" if _pack.kind == "campaign" else _pack.title
 	var progress := SaveService.progress
-	_star_total.text = "%d/%d ★" % [progress.total_stars(_pack.level_ids()), _pack.puzzles.size() * 3]
+	var earned := progress.total_stars(_pack.level_ids())
+	_star_total.title = "%d/%d" % [earned, _pack.puzzles.size() * 3]
+	_star_total.tooltip_text = "%d of %d stars" % [earned, _pack.puzzles.size() * 3]
 	_build()
 	_restore_scroll.call_deferred()
 
@@ -39,24 +41,38 @@ func _build() -> void:
 		var start: int = chapter["start"]
 		var count: int = chapter["count"]
 		var section := VBoxContainer.new()
-		section.add_theme_constant_override("separation", 16)
+		section.add_theme_constant_override("separation", 12)
 		_chapters.add_child(section)
 
+		var ids := PackedStringArray()
+		for i in range(start, start + count):
+			ids.append(_pack.puzzles[i].id)
+		var earned := progress.total_stars(ids)
+		if _pack.kind == "campaign":
+			var caption := Label.new()
+			caption.theme_type_variation = &"CaptionLabel"
+			caption.text = "CHAPTER %d" % (c + 1)
+			section.add_child(caption)
 		var heading := HBoxContainer.new()
 		section.add_child(heading)
 		var title := Label.new()
 		title.theme_type_variation = &"HeadingLabel"
-		title.add_theme_font_size_override("font_size", 32)
-		title.text = ("Chapter %d · %s" % [c + 1, chapter["title"]]) if _pack.kind == "campaign" else str(chapter["title"])
+		title.add_theme_font_size_override("font_size", 36)
+		title.text = str(chapter["title"])
 		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		heading.add_child(title)
-		var ids := PackedStringArray()
-		for i in range(start, start + count):
-			ids.append(_pack.puzzles[i].id)
 		var stars := Label.new()
-		stars.theme_type_variation = &"DimLabel"
-		stars.text = "%d/%d ★" % [progress.total_stars(ids), count * 3]
+		stars.theme_type_variation = &"StatLabel"
+		stars.add_theme_font_size_override("font_size", 28)
+		stars.add_theme_color_override("font_color", Palette.WARNING)
+		stars.text = "%d/%d ★" % [earned, count * 3]
 		heading.add_child(stars)
+		var bar := ProgressBar.new()
+		bar.custom_minimum_size = Vector2(0, 10)
+		bar.show_percentage = false
+		bar.max_value = count * 3
+		bar.value = earned
+		section.add_child(bar)
 
 		var grid := GridContainer.new()
 		grid.columns = COLUMNS

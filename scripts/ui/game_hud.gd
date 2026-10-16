@@ -15,10 +15,10 @@ var _settings_overlay: Control
 @onready var _moves: Label = %MovesLabel
 @onready var _par: Label = %ParLabel
 @onready var _limit: Label = %LimitLabel
-@onready var _pause_button: Button = %PauseButton
+@onready var _pause_button: IconButton = %PauseButton
 @onready var _undo_button: Button = %UndoButton
 @onready var _reset_button: Button = %ResetButton
-@onready var _hint_button: Button = %HintButton
+@onready var _hint_button: IconButton = %HintButton
 @onready var _dialog: ModalDialog = %Dialog
 
 
@@ -42,7 +42,7 @@ func _ready() -> void:
 
 	_title.text = "Daily Puzzle" if GameManager.current_mode == GameManager.Mode.DAILY else puzzle.name
 	_chapter.text = _subtitle_for(puzzle)
-	_par.text = "Par %d" % puzzle.par
+	_par.text = str(puzzle.par)
 	controller.start(puzzle)
 	_board.bind(controller)
 	_update_buttons()
@@ -87,10 +87,11 @@ func _subtitle_for(puzzle: PuzzleData) -> String:
 
 
 func _on_moves_changed(moves: int) -> void:
-	_moves.text = "Moves %d" % moves
-	_limit.visible = controller.move_limit > 0
-	if _limit.visible:
-		_limit.text = "Left %d" % controller.moves_left()
+	_moves.text = str(moves)
+	var limited := controller.move_limit > 0
+	_limit.get_parent().visible = limited
+	if limited:
+		_limit.text = str(controller.moves_left())
 	_update_buttons()
 
 
@@ -99,7 +100,8 @@ func _update_buttons() -> void:
 	_undo_button.disabled = not controller.can_undo()
 	_reset_button.disabled = not playing or controller.moves == 0
 	_hint_button.disabled = not playing
-	_hint_button.text = "Hint (%d)" % SaveService.progress.hint_tokens
+	_hint_button.badge = SaveService.progress.hint_tokens
+	_hint_button.tooltip_text = "Hint (%d left)" % SaveService.progress.hint_tokens
 	_board.interactive = playing and not _dialog.is_open()
 
 

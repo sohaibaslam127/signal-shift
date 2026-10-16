@@ -6,6 +6,7 @@ extends Control
 const TILE_SCENE := preload("res://scenes/game/circuit_tile.tscn")
 const MAX_TILE_SIZE := 150.0
 const PULSE_STEP := 0.035
+const TRAY_PADDING := 18.0
 
 var controller: PuzzleController
 var interactive: bool = true:
@@ -17,10 +18,25 @@ var interactive: bool = true:
 var _tiles: Array[CircuitTile] = []
 var _was_powered: PackedByteArray = PackedByteArray()
 var _hinted_index := -1
+var _grid_rect := Rect2()
+var _tray := StyleBoxFlat.new()
 
 
 func _ready() -> void:
 	resized.connect(_layout)
+	_tray.bg_color = Color(Palette.BOARD_TRAY, 0.92)
+	_tray.border_color = Color(Palette.CIRCUIT, 0.22)
+	_tray.set_border_width_all(2)
+	_tray.set_corner_radius_all(34)
+	_tray.shadow_color = Color(Palette.CIRCUIT, 0.10)
+	_tray.shadow_size = 36
+	_tray.anti_aliasing = true
+
+
+func _draw() -> void:
+	if _grid_rect.size == Vector2.ZERO:
+		return
+	draw_style_box(_tray, _grid_rect.grow(TRAY_PADDING))
 
 
 func bind(puzzle_controller: PuzzleController) -> void:
@@ -59,9 +75,12 @@ func _layout() -> void:
 	if controller == null or _tiles.is_empty():
 		return
 	var board := controller.board
-	var tile_size := floorf(minf(minf(size.x / board.width, size.y / board.height), MAX_TILE_SIZE))
+	var available := size - Vector2(TRAY_PADDING, TRAY_PADDING) * 2.0
+	var tile_size := floorf(minf(minf(available.x / board.width, available.y / board.height), MAX_TILE_SIZE))
 	var grid_size := Vector2(tile_size * board.width, tile_size * board.height)
 	var origin := ((size - grid_size) * 0.5).floor()
+	_grid_rect = Rect2(origin, grid_size)
+	queue_redraw()
 	for i in _tiles.size():
 		var cell := board.cell_of(i)
 		var tile := _tiles[i]
