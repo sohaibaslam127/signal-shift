@@ -6,6 +6,8 @@ extends Control
 
 var _pulse := 0.0
 
+const SHAPE: Array[Vector2] = [Vector2(0.18, 0.72), Vector2(0.42, 0.72), Vector2(0.42, 0.3), Vector2(0.82, 0.3)]
+
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -23,11 +25,12 @@ func _set_pulse(value: float) -> void:
 func _draw() -> void:
 	var s := minf(size.x, size.y)
 	var origin := (size - Vector2(s, s)) * 0.5
-	var p := func(x: float, y: float) -> Vector2: return origin + Vector2(x, y) * s
-	var points := PackedVector2Array([p.call(0.18, 0.72), p.call(0.42, 0.72), p.call(0.42, 0.3), p.call(0.82, 0.3)])
+	var points := PackedVector2Array()
+	for p in SHAPE:
+		points.append(origin + p * s)
 	var width := s * 0.07
-	draw_polyline(points, Color(Palette.SIGNAL, 0.18), width * 2.2, true)
-	draw_polyline(points, Palette.CIRCUIT, width, true)
+	_draw_trace(points, Color(Palette.SIGNAL, 0.18), width * 2.2)
+	_draw_trace(points, Palette.CIRCUIT, width)
 	# Travelling pulse along the trace.
 	if animate:
 		var total := 0.0
@@ -43,3 +46,11 @@ func _draw() -> void:
 	draw_circle(points[0], width * 1.25, Palette.SIGNAL)
 	draw_circle(points[0], width * 0.6, Palette.TEXT)
 	draw_arc(points[-1], width * 1.3, 0.0, TAU, 32, Palette.SUCCESS, width * 0.55, true)
+
+
+## Polyline with round joints and caps.
+func _draw_trace(points: PackedVector2Array, color: Color, width: float) -> void:
+	for i in points.size() - 1:
+		draw_line(points[i], points[i + 1], color, width, true)
+	for point in points:
+		draw_circle(point, width * 0.5, color)

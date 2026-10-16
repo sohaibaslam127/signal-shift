@@ -88,11 +88,13 @@ Notes: plugin APIs must be verified against the exact plugin versions that get i
 
 ## Milestone 9 — Polish
 
-- [ ] Procedurally synthesized, original sound effects and ambient music loop (no third-party audio).
-- [ ] Signal pulse animation, win glow, button feedback, haptics.
-- [ ] Original app icon (`icon.svg`) and splash colours.
-- [ ] Performance pass: no per-frame allocations in gameplay; tiles redraw only when state changes.
-- [ ] Store screenshots / feature graphic (`docs/STORE_LISTING.md` lists required sizes; capture on device).
+- [x] Procedurally synthesized, original sound effects and ambient music loop (no third-party audio).
+- [x] Signal pulse animation, win glow, button feedback, haptics.
+- [x] Original app icon (`icon.svg`) and splash colours.
+- [x] First-level onboarding tips (levels 1–3).
+- [x] `tools/run_tests.sh` also boots the game headless and fails on runtime script errors.
+- [x] Performance pass: no per-frame allocations in gameplay; tiles redraw only when state changes.
+- [~] Store screenshots / feature graphic (`docs/STORE_LISTING.md` lists required sizes; capture on device).
 
 ## Milestone 10 — Release preparation
 

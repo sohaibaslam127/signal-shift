@@ -46,6 +46,27 @@ func _ready() -> void:
 	controller.start(puzzle)
 	_board.bind(controller)
 	_update_buttons()
+	_add_tutorial_tip(puzzle)
+
+
+## Onboarding for the first campaign levels: one line, gone once the level is solved.
+func _add_tutorial_tip(puzzle: PuzzleData) -> void:
+	if puzzle.pack_id != GameManager.CAMPAIGN_PACK_ID or puzzle.pack_index > 2 or SaveService.progress.is_completed(puzzle.id):
+		return
+	const TIPS := [
+		"Tap a tile to rotate it. Connect the glowing source to the ring.",
+		"Corners turn the signal. Tiles with corner dots can't rotate.",
+		"Aim for par — the fewest taps — to earn three stars.",
+	]
+	var tip := Label.new()
+	tip.theme_type_variation = &"DimLabel"
+	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tip.text = TIPS[puzzle.pack_index]
+	var column := _board.get_parent().get_parent()
+	column.add_child(tip)
+	column.move_child(tip, _board.get_parent().get_index() + 1)
+	controller.won.connect(func(_m: int, _s: int) -> void: tip.queue_free(), CONNECT_ONE_SHOT)
 
 
 func handle_back() -> void:

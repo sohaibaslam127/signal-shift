@@ -13,4 +13,13 @@ if echo "$output" | grep -qE 'SCRIPT ERROR|Parse Error'; then
 	echo "Script errors detected." >&2
 	exit 1
 fi
+
+# Boot the real game headless for a few seconds: catches runtime errors in boot + main menu.
+boot="$("$GODOT" --headless --path . --quit-after 240 2>&1)"
+if echo "$boot" | grep -qE 'SCRIPT ERROR|Parse Error'; then
+	echo "$boot" | grep -E -A3 'SCRIPT ERROR|Parse Error' >&2
+	echo "Script errors while booting the game." >&2
+	exit 1
+fi
+echo "Boot smoke run: ok"
 exit $status
