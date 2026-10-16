@@ -80,7 +80,7 @@ Status legend: `[x]` done and validated, `[~]` partially done (see notes), `[ ]`
 
 ## Milestone 8 — Mobile plugin integration
 
-- [ ] Integration guide and adapter seams in `docs/PLUGIN_INTEGRATION.md`.
+- [x] Integration guide and adapter seams in `docs/PLUGIN_INTEGRATION.md`; adapters are picked from project settings with safe fallback (tested).
 - [ ] Install chosen AdMob / Google Play Billing / StoreKit plugins (needs developer accounts, product IDs and plugin version choice).
 - [ ] Device testing of rewarded ads and purchases (needs physical devices and store sandbox accounts).
 

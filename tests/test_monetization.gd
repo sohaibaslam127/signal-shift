@@ -125,3 +125,14 @@ func test_extend_moves_only_after_failure() -> void:
 	assert_true(controller.extend_moves(3), "bonus moves")
 	assert_eq(controller.moves_left(), 3, "three more moves")
 	assert_eq(controller.puzzle.move_limit, 2, "catalog puzzle unchanged")
+
+
+func test_backend_detection_falls_back_safely() -> void:
+	ProjectSettings.set_setting("signal_shift/purchase_backend_script", "res://does/not/exist.gd")
+	ProjectSettings.set_setting("signal_shift/ads_backend_script", "res://tests/test_case.gd")  # wrong type
+	assert_false(_store.call("_detect_backend").is_available(), "missing adapter -> no billing")
+	assert_false(_ads.call("_detect_backend").is_available(), "wrong type -> no ads")
+	ProjectSettings.set_setting("signal_shift/ads_backend_script", "res://tests/fakes/fake_ads_backend.gd")
+	assert_true(_ads.call("_detect_backend").is_available(), "valid adapter is picked up")
+	ProjectSettings.set_setting("signal_shift/purchase_backend_script", "")
+	ProjectSettings.set_setting("signal_shift/ads_backend_script", "")

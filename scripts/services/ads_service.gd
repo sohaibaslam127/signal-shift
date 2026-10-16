@@ -77,7 +77,18 @@ func _disconnect_all(sig: Signal) -> void:
 
 
 ## Picks a platform backend when an ad plugin is installed. See docs/PLUGIN_INTEGRATION.md.
+## The adapter script path comes from the project setting `signal_shift/ads_backend_script`
+## (per platform via feature overrides, e.g. `signal_shift/ads_backend_script.android`).
+## Any failure falls back to the base backend, so a broken plugin never blocks play.
 func _detect_backend() -> AdsBackend:
+	var path: String = ProjectSettings.get_setting("signal_shift/ads_backend_script", "")
+	if path.is_empty() or not ResourceLoader.exists(path):
+		return AdsBackend.new()
+	var script := load(path) as Script
+	var instance: Variant = script.new() if script != null and script.can_instantiate() else null
+	if instance is AdsBackend:
+		return instance
+	push_warning("%s is not a AdsBackend; using the no-SDK backend." % path)
 	return AdsBackend.new()
 
 
