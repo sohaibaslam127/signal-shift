@@ -27,12 +27,12 @@ Status legend: `[x]` done and validated, `[~]` partially done (see notes), `[ ]`
 
 ## Milestone 2 — Circuit tiles, rotation, signal solver
 
-- [ ] `TileTypes`: directions (up/right/down/left) as bitmasks, base masks per tile type, clockwise rotation.
-- [ ] Tile types: straight, corner, tee (three-way), cross (four-way), source, destination, blocked, empty; fixed flag.
-- [ ] `BoardState`: pure data model (types, rotations, fixed flags), rotate, snapshot/restore.
-- [ ] `SignalSolver`: deterministic BFS from the source, reciprocal-connection rule, stops at blocked cells, visited set (loops safe), returns powered cells and reached destinations.
-- [ ] `CircuitTile` view: vector-drawn from the connection mask (data is the source of truth), rotation tween, powered state, fixed-tile feedback.
-- [ ] Tests: rotation, reciprocal connections, traversal, loops, branching, blocked cells, fixed tiles.
+- [x] `TileTypes`: directions (up/right/down/left) as bitmasks, base masks per tile type, clockwise rotation.
+- [x] Tile types: straight, corner, tee (three-way), cross (four-way), source, destination, blocked, empty; fixed flag.
+- [x] `BoardState`: pure data model (types, rotations, fixed flags), rotate, snapshot/restore.
+- [x] `SignalSolver`: deterministic BFS from the source, reciprocal-connection rule, stops at blocked cells, visited set (loops safe), returns powered cells and reached destinations.
+- [x] `CircuitTile` view: vector-drawn from the connection mask (data is the source of truth), rotation tween, powered state, fixed-tile feedback.
+- [x] Tests: rotation, reciprocal connections, traversal, loops, branching, blocked cells, fixed tiles.
 
 ## Milestone 3 — Puzzle data, validation, HUD, victory detection
 

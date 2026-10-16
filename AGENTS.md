@@ -14,7 +14,10 @@ Guidance for coding agents (Claude Code, Google Antigravity) working on this rep
 # Re-import resources and refresh the global class cache (run after adding class_name scripts)
 godot --headless --path . --import
 
-# Run the automated test suite (exit code 0 = all passed)
+# Run import + tests; also fails on any SCRIPT ERROR (preferred)
+./tools/run_tests.sh
+
+# Run only the test runner (exit code 0 = all passed)
 godot --headless --path . -s res://tests/run_tests.gd
 
 # Regenerate the UI theme resource
