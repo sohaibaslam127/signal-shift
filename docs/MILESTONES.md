@@ -36,13 +36,13 @@ Status legend: `[x]` done and validated, `[~]` partially done (see notes), `[ ]`
 
 ## Milestone 3 — Puzzle data, validation, HUD, victory detection
 
-- [ ] `PuzzleData`: data-driven JSON level format (tiles, solution, par, optional move limit).
-- [ ] `PuzzleValidator`: grid dimensions, tokens, source/destination present, fixed/blocked rules, solution solves the board, initial board is not already solved, par/move-limit consistency.
-- [ ] `PuzzleBoard` view and `PuzzleController` (moves, win detection, single victory event, input lock after win).
-- [ ] Game scene with HUD: level name, move counter, move limit, reset, undo, hint, pause.
-- [ ] Victory panel: stars, next level, replay, level select.
-- [ ] Out-of-moves panel when a move limit is exceeded.
-- [ ] Tests: validation failures, win detection, duplicate-victory guard.
+- [x] `PuzzleData`: data-driven JSON level format (tiles, solution, par, optional move limit).
+- [x] `PuzzleValidator`: grid dimensions, tokens, source/destination present, fixed/blocked rules, solution solves the board, initial board is not already solved, par/move-limit consistency.
+- [x] `PuzzleBoard` view and `PuzzleController` (moves, win detection, single victory event, input lock after win).
+- [x] Game scene with HUD: level name, move counter, move limit, reset, undo, hint, pause.
+- [x] Victory panel: stars, next level, replay, level select.
+- [x] Out-of-moves panel when a move limit is exceeded.
+- [x] Tests: validation failures, win detection, duplicate-victory guard.
 
 ## Milestone 4 — 60-level campaign
 

@@ -1,0 +1,10 @@
+{
+	"id": "campaign",
+	"title": "Campaign",
+	"description": "The free starter campaign.",
+	"chapters": [ { "title": "Ignition", "levels": 10 } ],
+	"puzzles": [
+		{ "id": "c001", "name": "First Light", "rows": ["S1* I0 D3*", ". . ."], "solution": ["113", "000"], "par": 1 },
+		{ "id": "c002", "name": "Bend", "rows": ["S2* .", "L1 D3*"], "solution": ["20", "03"], "par": 3 }
+	]
+}

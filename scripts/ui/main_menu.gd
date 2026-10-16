@@ -14,7 +14,7 @@ func _ready() -> void:
 	_version.text = "v%s" % ProjectSettings.get_setting("application/config/version", "0.1.0")
 	_continue_button.text = "Continue" if GameManager.has_progress() else "Play"
 	_wire(_continue_button, _on_continue, SceneRouter.GAME)
-	_wire(_daily_button, _on_daily, SceneRouter.GAME)
+	_wire(_daily_button, _on_daily, "res://scenes/menus/daily_unavailable")
 	_wire(_levels_button, _on_levels, SceneRouter.LEVEL_SELECT)
 	_wire(_packs_button, _on_packs, SceneRouter.PACK_STORE)
 	_wire(_settings_button, _on_settings, SceneRouter.SETTINGS)
@@ -37,7 +37,7 @@ func _refresh_daily() -> void:
 
 
 func _on_continue() -> void:
-	pass
+	GameManager.play(GameManager.continue_puzzle())
 
 
 func _on_daily() -> void:

@@ -1,0 +1,145 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/game_hud.gd" id="1_hud"]
+[ext_resource type="Script" path="res://scripts/ui/circuit_background.gd" id="2_bg"]
+[ext_resource type="Script" path="res://scripts/ui/safe_area_container.gd" id="3_safe"]
+[ext_resource type="PackedScene" path="res://scenes/game/puzzle_board.tscn" id="4_board"]
+[ext_resource type="PackedScene" path="res://scenes/components/secondary_button.tscn" id="5_button"]
+[ext_resource type="PackedScene" path="res://scenes/components/dialog.tscn" id="6_dialog"]
+
+[node name="Game" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hud")
+
+[node name="Background" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_bg")
+
+[node name="Safe" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_safe")
+
+[node name="Column" type="VBoxContainer" parent="Safe"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Header" type="HBoxContainer" parent="Safe/Column"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="PauseButton" parent="Safe/Column/Header" instance=ExtResource("5_button")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 96)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"HudButton"
+text = "Menu"
+
+[node name="TitleBox" type="VBoxContainer" parent="Safe/Column/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="LevelTitle" type="Label" parent="Safe/Column/Header/TitleBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeadingLabel"
+theme_override_font_sizes/font_size = 36
+text = "Level"
+horizontal_alignment = 1
+text_overrun_behavior = 3
+
+[node name="ChapterLabel" type="Label" parent="Safe/Column/Header/TitleBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"DimLabel"
+theme_override_font_sizes/font_size = 22
+text = "Chapter"
+horizontal_alignment = 1
+text_overrun_behavior = 3
+
+[node name="HeaderBalance" type="Control" parent="Safe/Column/Header"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Stats" type="HBoxContainer" parent="Safe/Column"]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="MovesLabel" type="Label" parent="Safe/Column/Stats"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"StatLabel"
+text = "Moves 0"
+
+[node name="ParLabel" type="Label" parent="Safe/Column/Stats"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"DimLabel"
+theme_override_font_sizes/font_size = 30
+text = "Par 0"
+
+[node name="LimitLabel" type="Label" parent="Safe/Column/Stats"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"StatLabel"
+theme_override_colors/font_color = Color(1, 0.705882, 0.329412, 1)
+text = "Left 0"
+
+[node name="BoardArea" type="MarginContainer" parent="Safe/Column"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Board" parent="Safe/Column/BoardArea" instance=ExtResource("4_board")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Toolbar" type="HBoxContainer" parent="Safe/Column"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="UndoButton" parent="Safe/Column/Toolbar" instance=ExtResource("5_button")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 104)
+layout_mode = 2
+theme_type_variation = &"HudButton"
+text = "Undo"
+
+[node name="ResetButton" parent="Safe/Column/Toolbar" instance=ExtResource("5_button")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 104)
+layout_mode = 2
+theme_type_variation = &"HudButton"
+text = "Reset"
+
+[node name="HintButton" parent="Safe/Column/Toolbar" instance=ExtResource("5_button")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 104)
+layout_mode = 2
+theme_type_variation = &"HudButton"
+text = "Hint"
+
+[node name="Dialog" parent="." instance=ExtResource("6_dialog")]
+unique_name_in_owner = true
+layout_mode = 1

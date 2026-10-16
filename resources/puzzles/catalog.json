@@ -1,0 +1,5 @@
+{
+	"packs": [
+		{ "id": "campaign", "file": "res://resources/puzzles/campaign/campaign.json", "kind": "campaign" }
+	]
+}
