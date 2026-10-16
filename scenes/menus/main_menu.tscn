@@ -1,0 +1,124 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_menu"]
+[ext_resource type="Script" path="res://scripts/ui/circuit_background.gd" id="2_bg"]
+[ext_resource type="Script" path="res://scripts/ui/safe_area_container.gd" id="3_safe"]
+[ext_resource type="Script" path="res://scripts/ui/logo_mark.gd" id="4_logo"]
+[ext_resource type="PackedScene" path="res://scenes/components/primary_button.tscn" id="5_primary"]
+[ext_resource type="PackedScene" path="res://scenes/components/secondary_button.tscn" id="6_secondary"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Background" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_bg")
+
+[node name="Safe" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_safe")
+
+[node name="Column" type="VBoxContainer" parent="Safe"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TopSpacer" type="Control" parent="Safe/Column"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Logo" type="Control" parent="Safe/Column"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("4_logo")
+
+[node name="Title" type="Label" parent="Safe/Column"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "SIGNAL SHIFT"
+horizontal_alignment = 1
+
+[node name="Tagline" type="Label" parent="Safe/Column"]
+layout_mode = 2
+theme_type_variation = &"DimLabel"
+text = "Connect the signal. Outsmart the grid."
+horizontal_alignment = 1
+
+[node name="MidSpacer" type="Control" parent="Safe/Column"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Buttons" type="VBoxContainer" parent="Safe/Column"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 18
+
+[node name="ContinueButton" parent="Safe/Column/Buttons" instance=ExtResource("5_primary")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(520, 110)
+layout_mode = 2
+text = "Play"
+
+[node name="DailyButton" parent="Safe/Column/Buttons" instance=ExtResource("6_secondary")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(520, 96)
+layout_mode = 2
+theme_type_variation = &"AccentButton"
+text = "Daily Puzzle"
+
+[node name="DailyStatus" type="Label" parent="Safe/Column/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"DimLabel"
+text = "A new puzzle every day"
+horizontal_alignment = 1
+
+[node name="LevelsButton" parent="Safe/Column/Buttons" instance=ExtResource("6_secondary")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(520, 96)
+layout_mode = 2
+text = "Levels"
+
+[node name="PacksButton" parent="Safe/Column/Buttons" instance=ExtResource("6_secondary")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(520, 96)
+layout_mode = 2
+text = "Puzzle Packs"
+
+[node name="SettingsButton" parent="Safe/Column/Buttons" instance=ExtResource("6_secondary")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(520, 96)
+layout_mode = 2
+text = "Settings"
+
+[node name="BottomSpacer" type="Control" parent="Safe/Column"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Version" type="Label" parent="Safe/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"DimLabel"
+theme_override_font_sizes/font_size = 20
+text = "v0.1.0"
+horizontal_alignment = 1

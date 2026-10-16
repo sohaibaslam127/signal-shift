@@ -10,14 +10,42 @@ config_version=5
 
 [application]
 
-config/name="SignalShift"
-config/features=PackedStringArray("4.7", "Mobile")
+config/name="Signal Shift"
+config/description="Connect the signal. Outsmart the grid."
+config/version="0.1.0"
+run/main_scene="res://scenes/boot/boot.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+boot_splash/bg_color=Color(0.039, 0.059, 0.122, 1)
+boot_splash/show_image=false
 config/icon="res://icon.svg"
+config/quit_on_go_back=false
+
+[autoload]
+
+SignalBus="*res://scripts/core/signal_bus.gd"
+SaveService="*res://scripts/services/save_service.gd"
+AudioService="*res://scripts/services/audio_service.gd"
+GameManager="*res://scripts/core/game_manager.gd"
+SceneRouter="*res://scripts/core/scene_router.gd"
 
 [display]
 
+window/size/viewport_width=720
+window/size/viewport_height=1280
+window/size/window_width_override=450
+window/size/window_height_override=800
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+window/handheld/orientation=1
+
+[gui]
+
+theme/custom="res://resources/themes/signal_theme.tres"
+common/drop_mouse_on_gui_input_disabled=true
+
+[input_devices]
+
+pointing/emulate_mouse_from_touch=true
 
 [physics]
 
@@ -25,5 +53,7 @@ window/stretch/aspect="expand"
 
 [rendering]
 
-rendering_device/driver.windows="d3d12"
-renderer/rendering_method="mobile"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.039, 0.059, 0.122, 1)
+textures/vram_compression/import_etc2_astc=true
