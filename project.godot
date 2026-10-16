@@ -47,6 +47,10 @@ common/drop_mouse_on_gui_input_disabled=true
 
 pointing/emulate_mouse_from_touch=true
 
+[signal_shift]
+
+privacy_policy_url="https://github.com/sohaibaslam127/signal-shift/blob/main/docs/PRIVACY_POLICY.md"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

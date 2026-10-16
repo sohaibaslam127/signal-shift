@@ -11,6 +11,9 @@ var current_puzzle: PuzzleData
 var current_mode: Mode = Mode.CAMPAIGN
 ## Date key of the daily puzzle being played (Mode.DAILY only).
 var current_daily_key: String = ""
+## Pack shown by the level select screen, and its remembered scroll offsets (per session).
+var browsing_pack_id: String = CAMPAIGN_PACK_ID
+var level_select_scroll: Dictionary = {}
 
 
 func _ready() -> void:

@@ -45,7 +45,8 @@ func _on_daily() -> void:
 
 
 func _on_levels() -> void:
-	pass
+	GameManager.browsing_pack_id = GameManager.CAMPAIGN_PACK_ID
+	SceneRouter.goto(SceneRouter.LEVEL_SELECT)
 
 
 func _on_packs() -> void:
@@ -53,4 +54,4 @@ func _on_packs() -> void:
 
 
 func _on_settings() -> void:
-	pass
+	SceneRouter.open_settings(SceneRouter.MAIN_MENU)

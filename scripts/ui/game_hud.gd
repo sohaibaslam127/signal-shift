@@ -3,8 +3,10 @@ extends Control
 ## pause menu, victory and out-of-moves dialogs.
 
 const RESULT_SCENE := preload("res://scenes/game/puzzle_result.tscn")
+const SETTINGS_SCENE := "res://scenes/menus/settings.tscn"
 
 var controller := PuzzleController.new()
+var _settings_overlay: Control
 
 @onready var _board: PuzzleBoard = %Board
 @onready var _title: Label = %LevelTitle
@@ -46,6 +48,9 @@ func _ready() -> void:
 
 
 func handle_back() -> void:
+	if is_instance_valid(_settings_overlay):
+		_settings_overlay.call("handle_back")
+		return
 	if _dialog.is_open():
 		if controller.is_playing():
 			_dialog.close()
@@ -128,10 +133,17 @@ func _open_pause() -> void:
 	_dialog.add_button("Resume", _update_buttons, &"PrimaryButton")
 	if controller.is_playing():
 		_dialog.add_button("Restart", _on_reset_from_menu)
-	if ResourceLoader.exists(SceneRouter.SETTINGS):
-		_dialog.add_button("Settings", func() -> void: SceneRouter.open_settings(SceneRouter.GAME))
+	_dialog.add_button("Settings", _open_settings_overlay)
 	_dialog.add_button("Level Select" if ResourceLoader.exists(SceneRouter.LEVEL_SELECT) else "Main Menu", _go_to_levels)
 	_open_dialog()
+
+
+## Settings open on top of the board so the puzzle state is kept.
+func _open_settings_overlay() -> void:
+	_settings_overlay = (load(SETTINGS_SCENE) as PackedScene).instantiate()
+	add_child(_settings_overlay)
+	_board.interactive = false
+	_settings_overlay.connect("closed", _open_pause.call_deferred)
 
 
 func _on_reset_from_menu() -> void:

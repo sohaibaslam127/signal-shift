@@ -53,12 +53,12 @@ Status legend: `[x]` done and validated, `[~]` partially done (see notes), `[ ]`
 
 ## Milestone 5 — Level select, undo, reset, saving, settings
 
-- [ ] `ProgressionData` with versioned save schema, validation and migration of missing fields.
-- [ ] `SaveService`: atomic write (temp file + rename), backup, graceful recovery from corrupted/missing data.
-- [ ] Undo restores the exact previous board state (rotations + move count); reset restores the initial board.
-- [ ] Level select grouped by chapter, locked/unlocked, stars, scroll position preserved.
-- [ ] Settings: sound, music, haptics, reduced motion, privacy policy link, restore purchases.
-- [ ] Tests: undo/reset, save/load round trip, corrupted save handling.
+- [x] `ProgressionData` with versioned save schema, validation and migration of missing fields.
+- [x] `SaveService`: atomic write (temp file + rename), backup, graceful recovery from corrupted/missing data.
+- [x] Undo restores the exact previous board state (rotations + move count); reset restores the initial board.
+- [x] Level select grouped by chapter, locked/unlocked, stars, scroll position preserved.
+- [x] Settings: sound, music, haptics, reduced motion, privacy policy link, restore purchases.
+- [x] Tests: undo/reset, save/load round trip, corrupted save handling.
 
 ## Milestone 6 — Daily challenges and accessibility
 
