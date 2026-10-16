@@ -62,11 +62,11 @@ Status legend: `[x]` done and validated, `[~]` partially done (see notes), `[ ]`
 
 ## Milestone 6 — Daily challenges and accessibility
 
-- [ ] `DailyPuzzleService`: date → puzzle mapping is deterministic, bundled offline content (`resources/puzzles/daily/daily.json`).
-- [ ] Track daily completion; modest non-premium reward (one free hint token). No streak punishment.
-- [ ] Daily card on main menu with completion state.
-- [ ] Accessibility: reduced motion (disables tweens/pulses), colour-independent cues (powered tiles get a thicker line and a node dot, not only a colour change), large touch targets.
-- [ ] Tests: daily selection determinism, reward granted once per day.
+- [x] `DailyPuzzleService`: date → puzzle mapping is deterministic, bundled offline content (`resources/puzzles/daily/daily.json`).
+- [x] Track daily completion; modest non-premium reward (one free hint token). No streak punishment.
+- [x] Daily card on main menu with completion state.
+- [x] Accessibility: reduced motion (disables tweens/pulses), colour-independent cues (powered tiles get a thicker line and a node dot, not only a colour change), large touch targets.
+- [x] Tests: daily selection determinism, reward granted once per day.
 
 ## Milestone 7 — Rewarded ads and IAP service interfaces
 

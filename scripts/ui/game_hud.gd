@@ -39,7 +39,7 @@ func _ready() -> void:
 	_hint_button.pressed.connect(_on_hint)
 	SignalBus.hint_tokens_changed.connect(func(_tokens: int) -> void: _update_buttons())
 
-	_title.text = puzzle.name
+	_title.text = "Daily Puzzle" if GameManager.current_mode == GameManager.Mode.DAILY else puzzle.name
 	_chapter.text = _subtitle_for(puzzle)
 	_par.text = "Par %d" % puzzle.par
 	controller.start(puzzle)
@@ -60,7 +60,7 @@ func handle_back() -> void:
 
 func _subtitle_for(puzzle: PuzzleData) -> String:
 	if GameManager.current_mode == GameManager.Mode.DAILY:
-		return "Daily Puzzle · %s" % GameManager.current_daily_key
+		return "%s · #%d" % [GameManager.current_daily_key, puzzle.pack_index + 1]
 	return GameManager.chapter_title(puzzle)
 
 

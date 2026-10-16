@@ -1,5 +1,6 @@
 {
 	"packs": [
-		{ "id": "campaign", "file": "res://resources/puzzles/campaign/campaign.json", "kind": "campaign" }
+		{ "id": "campaign", "file": "res://resources/puzzles/campaign/campaign.json", "kind": "campaign" },
+		{ "id": "daily", "file": "res://resources/puzzles/daily/daily.json", "kind": "daily" }
 	]
 }

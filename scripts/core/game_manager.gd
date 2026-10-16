@@ -58,6 +58,14 @@ func continue_puzzle() -> PuzzleData:
 	return campaign.puzzles[unlocked - 1]
 
 
+func play_daily(key: String) -> void:
+	var puzzle := DailyPuzzleService.puzzle_for(key)
+	if puzzle == null:
+		return
+	current_daily_key = key
+	play(puzzle, Mode.DAILY)
+
+
 func play(puzzle: PuzzleData, mode: Mode = Mode.CAMPAIGN) -> void:
 	current_puzzle = puzzle
 	current_mode = mode
@@ -78,11 +86,14 @@ func complete_current(moves: int, stars: int) -> Dictionary:
 		var campaign := campaign_pack()
 		progress.unlocked_campaign_levels = clampi(
 			maxi(progress.unlocked_campaign_levels, current_puzzle.pack_index + 2), 1, campaign.puzzles.size())
+	var reward := ""
+	if current_mode == Mode.DAILY and not current_daily_key.is_empty():
+		reward = DailyPuzzleService.complete(current_daily_key, progress)
 	var outcome := {
 		"first_clear": first_clear,
 		"new_best": previous_best > 0 and moves < previous_best,
 		"best_moves": progress.get_best_moves(current_puzzle.id),
-		"reward": "",
+		"reward": reward,
 	}
 	SaveService.save_progress()
 	SignalBus.progress_changed.emit()

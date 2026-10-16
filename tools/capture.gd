@@ -11,6 +11,10 @@ func _ready() -> void:
 		args[parts[0]] = parts[1] if parts.size() > 1 else "true"
 	if GameManager.campaign_pack() == null:
 		GameManager.load_content()
+	if args.has("daily"):
+		GameManager.current_mode = GameManager.Mode.DAILY
+		GameManager.current_daily_key = DailyPuzzleService.today_key()
+		GameManager.current_puzzle = DailyPuzzleService.today_puzzle()
 	if args.has("level"):
 		GameManager.current_puzzle = GameManager.catalog.get_puzzle(args["level"])
 	var scene: PackedScene = load(args.get("scene", "res://scenes/menus/main_menu.tscn"))
