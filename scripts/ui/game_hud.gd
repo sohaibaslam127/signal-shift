@@ -4,6 +4,7 @@ extends Control
 
 const RESULT_SCENE := preload("res://scenes/game/puzzle_result.tscn")
 const SETTINGS_SCENE := "res://scenes/menus/settings.tscn"
+const BONUS_MOVES := 3
 
 var controller := PuzzleController.new()
 var _settings_overlay: Control
@@ -66,7 +67,7 @@ func _subtitle_for(puzzle: PuzzleData) -> String:
 
 func _on_moves_changed(moves: int) -> void:
 	_moves.text = "Moves %d" % moves
-	_limit.visible = controller.puzzle.has_move_limit()
+	_limit.visible = controller.move_limit > 0
 	if _limit.visible:
 		_limit.text = "Left %d" % controller.moves_left()
 	_update_buttons()
@@ -98,17 +99,37 @@ func _on_hint() -> void:
 		_show_message("No hint needed", "Every tile on the route is already in place.")
 		return
 	var progress := SaveService.progress
-	if progress.hint_tokens <= 0:
-		_show_message("No hints left", "Solve today's Daily Puzzle to earn a free hint.")
+	if progress.hint_tokens > 0:
+		progress.add_hint_tokens(-1)
+		SaveService.save_progress()
+		SignalBus.hint_tokens_changed.emit(progress.hint_tokens)
+		_apply_hint()
+	elif PurchaseService.is_supporter():
+		_apply_hint()
+	else:
+		_offer_hint_video()
+
+
+func _offer_hint_video() -> void:
+	_dialog.prepare("Out of hints", "Watch a short optional video for one hint, or solve today's Daily Puzzle for a free one.")
+	_dialog.add_button("Watch Video for a Hint", _watch_hint_video, &"AccentButton")
+	_dialog.add_button("Not Now", _update_buttons)
+	_open_dialog()
+
+
+func _watch_hint_video() -> void:
+	_board.interactive = false
+	var outcome: Dictionary = await AdsService.request_reward("hint")
+	if not is_inside_tree():
 		return
-	_use_hint()
+	if outcome["granted"] and controller.is_playing():
+		_apply_hint()
+		_update_buttons()
+	else:
+		_show_message("No video available", outcome["message"])
 
 
-func _use_hint() -> void:
-	var progress := SaveService.progress
-	progress.add_hint_tokens(-1)
-	SaveService.save_progress()
-	SignalBus.hint_tokens_changed.emit(progress.hint_tokens)
+func _apply_hint() -> void:
 	var index := controller.apply_hint()
 	if index >= 0:
 		_board.highlight_hint(index)
@@ -194,10 +215,25 @@ func _on_failed() -> void:
 	AudioService.play(&"fail")
 	AudioService.haptic(60)
 	await get_tree().create_timer(0.1 if SaveService.progress.reduced_motion else 0.4).timeout
-	_dialog.prepare("Out of Moves", "This circuit allows only %d moves. Try a different route." % controller.puzzle.move_limit)
+	_dialog.prepare("Out of Moves", "This circuit allows only %d moves. Try a different route." % controller.move_limit)
 	_dialog.add_button("Try Again", _on_retry, &"PrimaryButton")
 	_dialog.add_button("Undo Last Move", _on_undo_after_fail)
+	if AdsService.is_available():
+		_dialog.add_button("Watch Video for +%d Moves" % BONUS_MOVES, _watch_bonus_video, &"AccentButton")
 	_dialog.add_button("Level Select" if ResourceLoader.exists(SceneRouter.LEVEL_SELECT) else "Main Menu", _go_to_levels)
+	_open_dialog()
+
+
+func _watch_bonus_video() -> void:
+	var outcome: Dictionary = await AdsService.request_reward("bonus_moves")
+	if not is_inside_tree():
+		return
+	if outcome["granted"] and controller.extend_moves(BONUS_MOVES):
+		_update_buttons()
+		return
+	_dialog.prepare("No video available", outcome["message"])
+	_dialog.add_button("Try Again", _on_retry, &"PrimaryButton")
+	_dialog.add_button("Undo Last Move", _on_undo_after_fail)
 	_open_dialog()
 
 

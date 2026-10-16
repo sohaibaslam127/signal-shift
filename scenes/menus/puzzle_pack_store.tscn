@@ -1,0 +1,77 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/puzzle_pack_store.gd" id="1_store"]
+[ext_resource type="Script" path="res://scripts/ui/circuit_background.gd" id="2_bg"]
+[ext_resource type="Script" path="res://scripts/ui/safe_area_container.gd" id="3_safe"]
+[ext_resource type="PackedScene" path="res://scenes/components/secondary_button.tscn" id="4_button"]
+[ext_resource type="PackedScene" path="res://scenes/components/dialog.tscn" id="5_dialog"]
+
+[node name="PuzzlePackStore" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_store")
+
+[node name="Background" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_bg")
+
+[node name="Safe" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_safe")
+
+[node name="Column" type="VBoxContainer" parent="Safe"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Header" type="HBoxContainer" parent="Safe/Column"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BackButton" parent="Safe/Column/Header" instance=ExtResource("4_button")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 96)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"HudButton"
+text = "Back"
+
+[node name="Title" type="Label" parent="Safe/Column/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeadingLabel"
+text = "Puzzle Packs"
+horizontal_alignment = 1
+
+[node name="HeaderBalance" type="Control" parent="Safe/Column/Header"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Scroll" type="ScrollContainer" parent="Safe/Column"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Rows" type="VBoxContainer" parent="Safe/Column/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 16
+
+[node name="Dialog" parent="." instance=ExtResource("5_dialog")]
+unique_name_in_owner = true
+layout_mode = 1

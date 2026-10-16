@@ -16,6 +16,8 @@ var board: BoardState
 var moves: int = 0
 var state: State = State.PLAYING
 var hints_used: int = 0
+## Session copy of the puzzle's move limit (0 = none); can be extended by an optional bonus.
+var move_limit: int = 0
 var result: SignalSolver.Result
 
 ## Each entry: { "rotations": PackedByteArray, "moves": int }
@@ -29,6 +31,7 @@ func start(puzzle_data: PuzzleData) -> void:
 	board = puzzle.create_board()
 	moves = 0
 	hints_used = 0
+	move_limit = puzzle.move_limit
 	state = State.PLAYING
 	_undo_stack.clear()
 	_hint_order = SignalSolver.solve(puzzle.create_solution_board()).powered_order
@@ -46,7 +49,17 @@ func can_undo() -> bool:
 
 
 func moves_left() -> int:
-	return maxi(0, puzzle.move_limit - moves) if puzzle.has_move_limit() else -1
+	return maxi(0, move_limit - moves) if move_limit > 0 else -1
+
+
+## Adds moves after running out (optional rewarded bonus). Returns true if play resumed.
+func extend_moves(extra: int) -> bool:
+	if state != State.FAILED or move_limit <= 0 or extra <= 0:
+		return false
+	move_limit = moves + extra
+	state = State.PLAYING
+	moves_changed.emit(moves)
+	return true
 
 
 ## Handles a tap. Returns true if the board changed.
@@ -124,6 +137,6 @@ func _after_move(index: int) -> void:
 	if result.is_solved():
 		state = State.WON
 		won.emit(moves, puzzle.stars_for(moves))
-	elif puzzle.has_move_limit() and moves >= puzzle.move_limit:
+	elif move_limit > 0 and moves >= move_limit:
 		state = State.FAILED
 		failed.emit()

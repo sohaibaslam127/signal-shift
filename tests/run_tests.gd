@@ -12,6 +12,10 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	# Keep tests away from the real player save.
+	var save_service: Node = root.get_node("SaveService")
+	save_service.set("save_path", "user://test_runner_save.json")
+	save_service.call("delete_save")
 	var files := DirAccess.get_files_at(TEST_DIR)
 	var total := 0
 	var failed := 0
@@ -30,7 +34,8 @@ func _run() -> void:
 			var instance: Object = script.new()
 			instance.set("_current_test", "%s::%s" % [file_name.get_basename(), method_name])
 			instance.call("before_each")
-			instance.call(method_name)
+			# Awaiting works for both plain and coroutine (async) tests.
+			await instance.call(method_name)
 			instance.call("after_each")
 			total += 1
 			var failures: PackedStringArray = instance.get("failures")
@@ -40,5 +45,6 @@ func _run() -> void:
 				failed += 1
 				for failure in failures:
 					printerr("  FAIL %s" % failure)
+	save_service.call("delete_save")
 	print("\n%d tests, %d failed" % [total, failed])
 	quit(1 if failed > 0 else 0)

@@ -60,7 +60,7 @@ func _on_levels() -> void:
 
 
 func _on_packs() -> void:
-	pass
+	SceneRouter.goto(SceneRouter.PACK_STORE)
 
 
 func _on_settings() -> void:

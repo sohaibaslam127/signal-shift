@@ -27,6 +27,8 @@ SaveService="*res://scripts/services/save_service.gd"
 AudioService="*res://scripts/services/audio_service.gd"
 GameManager="*res://scripts/core/game_manager.gd"
 DailyPuzzleService="*res://scripts/services/daily_puzzle_service.gd"
+AdsService="*res://scripts/services/ads_service.gd"
+PurchaseService="*res://scripts/services/purchase_service.gd"
 SceneRouter="*res://scripts/core/scene_router.gd"
 
 [display]

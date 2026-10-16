@@ -115,6 +115,10 @@ func can_play(puzzle: PuzzleData) -> bool:
 		return false
 	if puzzle.pack_id == CAMPAIGN_PACK_ID:
 		return is_campaign_level_unlocked(puzzle.pack_index)
+	var pack := catalog.get_pack(puzzle.pack_id)
+	if pack != null and pack.kind == "premium":
+		# The first level of every pack is a free preview; the rest need the store entitlement.
+		return puzzle.pack_index == 0 or PurchaseService.owns(pack.product_id)
 	return true
 
 

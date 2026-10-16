@@ -1,6 +1,7 @@
 {
 	"packs": [
 		{ "id": "campaign", "file": "res://resources/puzzles/campaign/campaign.json", "kind": "campaign" },
-		{ "id": "daily", "file": "res://resources/puzzles/daily/daily.json", "kind": "daily" }
+		{ "id": "daily", "file": "res://resources/puzzles/daily/daily.json", "kind": "daily" },
+		{ "id": "overclock", "file": "res://resources/puzzles/packs/overclock.json", "kind": "premium", "product_id": "pack_overclock", "accent": "#8b6cff" }
 	]
 }

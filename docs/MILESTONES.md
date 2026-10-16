@@ -70,13 +70,13 @@ Status legend: `[x]` done and validated, `[~]` partially done (see notes), `[ ]`
 
 ## Milestone 7 — Rewarded ads and IAP service interfaces
 
-- [ ] `AdsService` + `AdsBackend` interface; `NullAdsBackend` default (ads unavailable, friendly message, gameplay continues).
-- [ ] Reward granted only on the backend's reward event; hints flow uses free tokens first, then optional rewarded ad.
-- [ ] `PurchaseService` + `PurchaseBackend` interface; `NullPurchaseBackend` default (billing unavailable). No simulated purchases.
-- [ ] Entitlements only come from backend query/restore results, never from a local flag alone.
-- [ ] Puzzle pack data (`resources/puzzles/packs/`) with manifest, previews, level counts; first level of each pack is a free preview.
-- [ ] Puzzle pack store screen; ad-free ("Supporter") upgrade with benefits spelled out.
-- [ ] Tests: reward only on success event, purchase cancel/failure handling, entitlement source of truth (using in-test fake backends).
+- [x] `AdsService` + `AdsBackend` interface; `NullAdsBackend` default (ads unavailable, friendly message, gameplay continues).
+- [x] Reward granted only on the backend's reward event; hints flow uses free tokens first, then optional rewarded ad.
+- [x] `PurchaseService` + `PurchaseBackend` interface; `NullPurchaseBackend` default (billing unavailable). No simulated purchases.
+- [x] Entitlements only come from backend query/restore results, never from a local flag alone.
+- [x] Puzzle pack data (`resources/puzzles/packs/`) with manifest, previews, level counts; first level of each pack is a free preview.
+- [x] Puzzle pack store screen; ad-free ("Supporter") upgrade with benefits spelled out.
+- [x] Tests: reward only on success event, purchase cancel/failure handling, entitlement source of truth (using in-test fake backends).
 
 ## Milestone 8 — Mobile plugin integration
 
