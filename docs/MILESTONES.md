@@ -98,6 +98,7 @@ Notes: plugin APIs must be verified against the exact plugin versions that get i
 
 ## Milestone 10 — Release preparation
 
-- [ ] `export_presets.cfg` for Android and iOS (portrait, JSON content included, no credentials committed).
-- [ ] `docs/PRIVACY_POLICY.md`, `docs/STORE_LISTING.md`, `docs/RELEASE_CHECKLIST.md`.
+- [x] `export_presets.cfg` for Android and iOS (portrait, JSON content included, no credentials committed).
+- [x] `docs/PRIVACY_POLICY.md`, `docs/STORE_LISTING.md`, `docs/RELEASE_CHECKLIST.md`.
+- [x] `--export-pack` dry run verified: puzzles JSON included, tests/tools/docs excluded.
 - [ ] Signed release builds (needs export templates, Android keystore, Apple developer team ID — not available on this machine).

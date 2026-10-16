@@ -1,3 +1,10 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Builds and signing material (never commit)
+/build/
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
