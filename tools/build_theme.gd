@@ -76,7 +76,7 @@ func _raised(face: Color, lip: Color, pressed: bool = false, radius: int = 28, m
 	box.content_margin_top = 14 + (LIP - 2 if pressed else 0)
 	box.content_margin_bottom = 14
 	if pressed:
-		box.expand_margin_top = -float(LIP - 2)
+		box.expand_margin_top = - float(LIP - 2)
 	box.shadow_color = Color(0, 0, 0, 0.0 if pressed else 0.35)
 	box.shadow_size = 10
 	box.shadow_offset = Vector2(0, 6)

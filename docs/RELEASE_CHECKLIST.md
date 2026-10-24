@@ -21,7 +21,7 @@ Items marked **(needs owner)** require accounts, credentials or hardware that ar
 ## Store consoles **(needs owner)**
 
 - [ ] Play Console: app created, content rating questionnaire, target audience, Data safety form
-      ("no data collected" while no ad SDK is integrated).
+	  ("no data collected" while no ad SDK is integrated).
 - [ ] App Store Connect: app record, age rating, App Privacy ("Data Not Collected" while no ad SDK).
 - [ ] Privacy policy URL: host `docs/PRIVACY_POLICY.md` publicly and set `signal_shift/privacy_policy_url`.
 - [ ] Store listing text and graphics from `docs/STORE_LISTING.md`.
@@ -33,4 +33,4 @@ Items marked **(needs owner)** require accounts, credentials or hardware that ar
 - [ ] iOS: export Xcode project → archive → upload with Xcode Organizer.
 - [ ] Internal testing track / TestFlight on at least one low-end Android phone and one iPhone.
 - [ ] Verify: portrait lock, notch/safe-area margins, back button behaviour (Android), pause/resume
-      saves progress, audio mutes when the app is backgrounded.
+	  saves progress, audio mutes when the app is backgrounded.
