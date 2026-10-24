@@ -4,7 +4,7 @@ extends RefCounted
 ## Connections are a 4-bit mask: UP=1, RIGHT=2, DOWN=4, LEFT=8. Rotation r (0..3) means
 ## r quarter turns clockwise from the base orientation.
 
-enum Type { EMPTY, STRAIGHT, CORNER, TEE, CROSS, SOURCE, DESTINATION, BLOCKED }
+enum Type { EMPTY, STRAIGHT, CORNER, TEE, CROSS, SOURCE, DESTINATION, BLOCKED, GATE_AND }
 
 const UP := 1
 const RIGHT := 2
@@ -26,6 +26,7 @@ const BASE_MASKS := {
 	Type.SOURCE: UP,
 	Type.DESTINATION: UP,
 	Type.BLOCKED: 0,
+	Type.GATE_AND: UP | RIGHT | DOWN,
 }
 
 const TOKEN_FOR_TYPE := {
@@ -37,6 +38,7 @@ const TOKEN_FOR_TYPE := {
 	Type.SOURCE: "S",
 	Type.DESTINATION: "D",
 	Type.BLOCKED: "#",
+	Type.GATE_AND: "G",
 }
 
 const TYPE_FOR_TOKEN := {
@@ -48,6 +50,12 @@ const TYPE_FOR_TOKEN := {
 	"S": Type.SOURCE,
 	"D": Type.DESTINATION,
 	"#": Type.BLOCKED,
+	"G": Type.GATE_AND,
+}
+
+## Base-orientation output side for each gate type; the other connected sides are inputs.
+const GATE_OUTPUT_BASE_BIT := {
+	Type.GATE_AND: RIGHT,
 }
 
 
@@ -99,3 +107,22 @@ static func rotation_for_mask(type: int, mask: int) -> int:
 		if connections(type, r) == mask:
 			return r
 	return -1
+
+
+static func is_gate(type: int) -> bool:
+	return GATE_OUTPUT_BASE_BIT.has(type)
+
+
+## The single connection bit a gate currently forwards signal through; 0 for non-gate types.
+static func gate_output_bit(type: int, rotation: int) -> int:
+	if not GATE_OUTPUT_BASE_BIT.has(type):
+		return 0
+	return rotate_mask(int(GATE_OUTPUT_BASE_BIT[type]), rotation)
+
+
+## A gate's remaining connected sides, which must all be powered before it forwards signal.
+static func gate_input_bits(type: int, rotation: int) -> int:
+	var output_bit := gate_output_bit(type, rotation)
+	if output_bit == 0:
+		return 0
+	return connections(type, rotation) & (ALL ^ output_bit)

@@ -39,6 +39,12 @@ func test_round_trip() -> void:
 	progress.record_completion("c002", 9, 2)
 	progress.mark_daily_completed("2026-10-16")
 	progress.hint_tokens = 4
+	progress.hints_reset_date = "2026-10-16"
+	progress.bonus_hint_events_today = 1
+	progress.rewarded_ad_count = 7
+	progress.pending_forced_ad = true
+	progress.unlock_pack_level_via_ad("overclock")
+	progress.premium_bonus_pack_id = "overclock"
 	progress.music_enabled = false
 	progress.reduced_motion = true
 	progress.last_played_level_id = "c003"
@@ -55,6 +61,12 @@ func test_round_trip() -> void:
 	assert_true(loaded.reduced_motion, "reduced motion")
 	assert_eq(loaded.last_played_level_id, "c003", "last played")
 	assert_eq(loaded.version, ProgressionData.CURRENT_VERSION, "version")
+	assert_eq(loaded.hints_reset_date, "2026-10-16", "hint reset date")
+	assert_eq(loaded.bonus_hint_events_today, 1, "bonus hint events")
+	assert_eq(loaded.rewarded_ad_count, 7, "rewarded ad count")
+	assert_true(loaded.pending_forced_ad, "pending forced ad")
+	assert_eq(int(loaded.pack_ad_unlocks.get("overclock", 0)), 1, "pack ad unlocks")
+	assert_eq(loaded.premium_bonus_pack_id, "overclock", "premium bonus pack")
 
 
 func test_best_record_kept() -> void:
@@ -110,3 +122,36 @@ func test_settings_and_level_select_scenes_load() -> void:
 	for path in ["res://scenes/menus/settings.tscn", "res://scenes/menus/level_select.tscn", "res://scenes/game/game.tscn"]:
 		var scene: PackedScene = load(path)
 		assert_true(scene != null and scene.can_instantiate(), "%s loads" % path)
+
+
+func test_daily_hint_reset_applies_once_per_day() -> void:
+	var progress := ProgressionData.new()
+	progress.hint_tokens = 0
+	assert_true(progress.reset_daily_hints_if_needed("2026-10-24", 3), "first reset of the day")
+	assert_eq(progress.hint_tokens, 3, "reset to baseline")
+	progress.hint_tokens = 1
+	assert_false(progress.reset_daily_hints_if_needed("2026-10-24", 3), "same day is a no-op")
+	assert_eq(progress.hint_tokens, 1, "unchanged on the same day")
+	progress.hint_tokens = 5
+	assert_true(progress.reset_daily_hints_if_needed("2026-10-25", 3), "next day resets again")
+	assert_eq(progress.hint_tokens, 3, "leftover hints do not carry over")
+
+
+func test_hint_solve_bonus_capped_per_day() -> void:
+	var progress := ProgressionData.new()
+	progress.hint_tokens = 0
+	assert_true(progress.grant_hint_solve_bonus(1, 1), "first bonus of the day")
+	assert_eq(progress.hint_tokens, 1, "bonus added")
+	assert_false(progress.grant_hint_solve_bonus(1, 1), "free tier gets only one bonus a day")
+	assert_eq(progress.hint_tokens, 1, "second bonus not granted")
+	progress.reset_daily_hints_if_needed("2026-10-25", 3)
+	assert_true(progress.grant_hint_solve_bonus(2, 3), "bonus available again after reset")
+
+
+func test_pack_ad_unlocks_extend_free_preview() -> void:
+	var progress := ProgressionData.new()
+	assert_eq(progress.free_levels_unlocked("overclock", 2), 2, "only the preview at first")
+	progress.unlock_pack_level_via_ad("overclock")
+	progress.unlock_pack_level_via_ad("overclock")
+	assert_eq(progress.free_levels_unlocked("overclock", 2), 4, "two more levels ad-unlocked")
+	assert_eq(progress.free_levels_unlocked("logic_gates", 2), 2, "unlocks are per pack")

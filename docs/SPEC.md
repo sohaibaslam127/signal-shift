@@ -40,7 +40,9 @@ Scene-oriented, modular architecture. Gameplay rules separate from presentation 
 ## 5. Gameplay rules
 
 ### Circuit tiles
-Straight, corner, three-way, four-way, source, destination, blocked, fixed (cannot rotate). Optional switch/gate tile in a later milestone. Connections are directions up, right, down, left. Rotating changes connections by 90 degrees; visuals must always match connection data.
+Straight, corner, three-way, four-way, source, destination, blocked, fixed (cannot rotate). Connections are directions up, right, down, left. Rotating changes connections by 90 degrees; visuals must always match connection data.
+
+**AND gate** (`GATE_AND`, Logic Gates pack): a three-way tile with one designated output side and two input sides (the designation rotates with the tile). It only forwards signal out of its output side once both of its input sides are independently powered; power reaching it through its output side never activates it. Generator-placed gates are always fixed, so the puzzle is in wiring both input arms and the output arm, not in re-orienting the gate.
 
 ### Signal solver
 Deterministic graph traversal / BFS that starts at the source, follows a connection only when the adjacent tile has the reciprocal connection, stops at blocked tiles and inactive gates, avoids revisiting tiles, detects destination reachability, returns the connected path for highlighting, and handles loops and branches safely. Visual node positions are never the source of truth.

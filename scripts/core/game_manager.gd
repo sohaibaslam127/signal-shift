@@ -5,6 +5,17 @@ extends Node
 enum Mode { CAMPAIGN, DAILY, PACK }
 
 const CAMPAIGN_PACK_ID := "campaign"
+## Levels of a premium pack playable before buying it or ad-unlocking more (see can_play).
+const FREE_PREVIEW_LEVELS := 2
+
+## Daily hint-pool baseline: free players reset to 3/day, Supporter players to 6/day.
+const FREE_DAILY_HINTS := 3
+const SUPPORTER_DAILY_HINTS := 6
+## Solving a level without a hint grants a bonus, capped per day (see complete_current).
+const FREE_HINT_SOLVE_BONUS := 1
+const SUPPORTER_HINT_SOLVE_BONUS := 2
+const FREE_HINT_SOLVE_BONUS_EVENTS := 1
+const SUPPORTER_HINT_SOLVE_BONUS_EVENTS := 3
 
 var catalog: LevelCatalog = LevelCatalog.new()
 var current_puzzle: PuzzleData
@@ -77,7 +88,7 @@ func play(puzzle: PuzzleData, mode: Mode = Mode.CAMPAIGN) -> void:
 
 ## Records a win, unlocks the next campaign level and saves.
 ## Returns { first_clear, new_best, best_moves, reward } for the result screen.
-func complete_current(moves: int, stars: int) -> Dictionary:
+func complete_current(moves: int, stars: int, hints_used: int = 0) -> Dictionary:
 	var progress := SaveService.progress
 	var first_clear := not progress.is_completed(current_puzzle.id)
 	var previous_best := progress.get_best_moves(current_puzzle.id)
@@ -89,6 +100,14 @@ func complete_current(moves: int, stars: int) -> Dictionary:
 	var reward := ""
 	if current_mode == Mode.DAILY and not current_daily_key.is_empty():
 		reward = DailyPuzzleService.complete(current_daily_key, progress)
+	if hints_used == 0:
+		refresh_daily_hints()
+		var supporter := PurchaseService.is_supporter()
+		var bonus := SUPPORTER_HINT_SOLVE_BONUS if supporter else FREE_HINT_SOLVE_BONUS
+		var max_events := SUPPORTER_HINT_SOLVE_BONUS_EVENTS if supporter else FREE_HINT_SOLVE_BONUS_EVENTS
+		if progress.grant_hint_solve_bonus(bonus, max_events) and reward.is_empty():
+			reward = "No-hint bonus: +%d hint" % bonus
+		SignalBus.hint_tokens_changed.emit(progress.hint_tokens)
 	var outcome := {
 		"first_clear": first_clear,
 		"new_best": previous_best > 0 and moves < previous_best,
@@ -117,9 +136,33 @@ func can_play(puzzle: PuzzleData) -> bool:
 		return is_campaign_level_unlocked(puzzle.pack_index)
 	var pack := catalog.get_pack(puzzle.pack_id)
 	if pack != null and pack.kind == "premium":
-		# The first level of every pack is a free preview; the rest need the store entitlement.
-		return puzzle.pack_index == 0 or PurchaseService.owns(pack.product_id)
+		if PurchaseService.owns(pack.product_id):
+			return true
+		# A Supporter purchase grants one pack of the player's choice in full.
+		if PurchaseService.is_supporter() and pack.id == SaveService.progress.premium_bonus_pack_id:
+			return true
+		# Beyond the free preview, every further level needs one rewarded ad watched for it.
+		return puzzle.pack_index < SaveService.progress.free_levels_unlocked(pack.id, FREE_PREVIEW_LEVELS)
 	return true
+
+
+## Watches-an-ad reward for a locked pack level: unlocks exactly the next one in that pack.
+func unlock_next_pack_level_via_ad(pack_id: String) -> void:
+	SaveService.progress.unlock_pack_level_via_ad(pack_id)
+	SaveService.save_progress()
+
+
+## Today's baseline the hint pool resets to: higher for Supporter players.
+func daily_hint_baseline() -> int:
+	return SUPPORTER_DAILY_HINTS if PurchaseService.is_supporter() else FREE_DAILY_HINTS
+
+
+## Applies the once-a-day hint reset if a new calendar day has started. Safe to call often.
+func refresh_daily_hints() -> void:
+	var progress := SaveService.progress
+	if progress.reset_daily_hints_if_needed(DailyPuzzleService.today_key(), daily_hint_baseline()):
+		SaveService.save_progress()
+		SignalBus.hint_tokens_changed.emit(progress.hint_tokens)
 
 
 func chapter_title(puzzle: PuzzleData) -> String:

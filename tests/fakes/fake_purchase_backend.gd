@@ -1,7 +1,7 @@
 extends PurchaseBackend
 ## Test double for the store. Only used by tests; the game never ships a simulated store.
 
-var mode := "success"  # "success", "cancel", "fail"
+var mode := "success" # "success", "cancel", "fail"
 var store_owned := PackedStringArray()
 
 

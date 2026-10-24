@@ -20,6 +20,10 @@ const CAMPAIGN_NAMES := [
 	"Rivets", "Bolted", "Dead Zone", "Firewall", "Bulkhead", "Tight Budget", "Countdown", "Clamp", "Lockstep", "Lockdown",
 	"Surge", "Feedback", "Breaker", "Capacitor", "Amplifier", "Interference", "Short Circuit", "Resonance", "Static", "Overload",
 	"Event Horizon", "Quantum", "Labyrinth", "Mainframe", "Supernova", "Paradox", "Nexus", "Zenith", "Apex", "Singularity",
+	"Cascade", "Downpour", "Overrun", "Backlash", "Ripple", "Torrent", "Spillway", "Deluge", "Runoff", "Floodgate",
+	"Redline", "Afterburn", "Turbocharge", "Slipstream", "Momentum", "Velocity", "Thrust", "Acceleration", "Overdrive", "Terminal Velocity",
+	"Fracture", "Fault Line", "Shatter", "Splinter", "Rupture", "Fissure", "Collapse", "Avalanche", "Landslide", "Seismic",
+	"Terminus", "Endgame", "Last Light", "Final Approach", "Horizon's Edge", "Vanishing Point", "Omega", "Eclipse", "Blackstar", "Zero Hour",
 ]
 
 const CAMPAIGN_CHAPTERS := [
@@ -29,6 +33,10 @@ const CAMPAIGN_CHAPTERS := [
 	{"title": "Lockdown", "levels": 10},
 	{"title": "Overload", "levels": 10},
 	{"title": "Singularity", "levels": 10},
+	{"title": "Cascade", "levels": 10},
+	{"title": "Overdrive", "levels": 10},
+	{"title": "Fracture", "levels": 10},
+	{"title": "Terminus", "levels": 10},
 ]
 
 var _failures := PackedStringArray()
@@ -39,7 +47,7 @@ func _initialize() -> void:
 	_write_pack("res://resources/puzzles/campaign/campaign.json", {
 		"id": "campaign",
 		"title": "Campaign",
-		"description": "Sixty handcrafted circuits, free forever.",
+		"description": "A hundred handcrafted circuits, free forever.",
 		"chapters": CAMPAIGN_CHAPTERS,
 	}, campaign)
 
@@ -55,9 +63,33 @@ func _initialize() -> void:
 	_write_pack("res://resources/puzzles/packs/overclock.json", {
 		"id": "overclock",
 		"title": "Overclock",
-		"description": "Twenty dense, multi-branch circuits for experts.",
-		"chapters": [{"title": "Overclock", "levels": 20}],
+		"description": "Sixty dense, multi-branch circuits for experts.",
+		"chapters": [{"title": "Overclock", "levels": 60}],
 	}, overclock)
+
+	var logic_gates := _build_pack("logic_gates", 51, _logic_gate_specs(), [], "g%02d", Callable(self, "_design_gate_puzzle"))
+	_write_pack("res://resources/puzzles/packs/logic_gates.json", {
+		"id": "logic_gates",
+		"title": "Logic Gates",
+		"description": "Sixty circuits built around the AND gate: wire both inputs before the signal can pass.",
+		"chapters": [{"title": "Logic Gates", "levels": 60}],
+	}, logic_gates)
+
+	var circuit_breaker := _build_pack("circuit_breaker", 67, _circuit_breaker_specs(), [], "b%02d")
+	_write_pack("res://resources/puzzles/packs/circuit_breaker.json", {
+		"id": "circuit_breaker",
+		"title": "Circuit Breaker",
+		"description": "Sixty circuits built around broken wires and overloaded paths: every circuit routes power to multiple targets at once.",
+		"chapters": [{"title": "Circuit Breaker", "levels": 60}],
+	}, circuit_breaker)
+
+	var quantum_protocol := _build_pack("quantum_protocol", 79, _quantum_protocol_specs(), [], "q%02d", Callable(self, "_design_gate_puzzle"))
+	_write_pack("res://resources/puzzles/packs/quantum_protocol.json", {
+		"id": "quantum_protocol",
+		"title": "Quantum Protocol",
+		"description": "Sixty advanced circuits: splitters and relays synchronize multiple outputs, and every move counts.",
+		"chapters": [{"title": "Quantum Protocol", "levels": 60}],
+	}, quantum_protocol)
 
 	if not _failures.is_empty():
 		for failure in _failures:
@@ -145,6 +177,42 @@ func _campaign_specs() -> Array[Dictionary]:
 			"limit": 2 if i >= 2 else 4,
 		}
 		specs.append(_spec(w, h, Vector2i(13 + i / 2, 17 + i / 2), Vector2i(18 + i, 30 + i), extra))
+	# 61–70 Cascade: wider grids, heavier blocked/decoy load.
+	for i in 10:
+		var extra := {
+			"branches": 2 if i < 5 else 3,
+			"fixed": 0.3, "blocked": 5 + i / 2,
+			"decoys": 0.82, "decoy_types": [T.STRAIGHT, T.CORNER, T.TEE, T.CROSS],
+			"limit": 3 if i >= 2 else 5,
+		}
+		specs.append(_spec(7, 9, Vector2i(16 + i / 2, 20 + i / 2), Vector2i(20 + i, 34 + i), extra))
+	# 71–80 Overdrive: full-size grid, tight move limits.
+	for i in 10:
+		var extra := {
+			"branches": 3,
+			"fixed": 0.32, "blocked": 6 + i / 2,
+			"decoys": 0.85, "decoy_types": [T.STRAIGHT, T.CORNER, T.TEE, T.CROSS],
+			"limit": 3 if i % 2 == 0 else 2,
+		}
+		specs.append(_spec(8, 10, Vector2i(18 + i / 2, 23 + i / 2), Vector2i(24 + i, 40 + i), extra))
+	# 81–90 Fracture: denser blocked layout, consistently tight limits.
+	for i in 10:
+		var extra := {
+			"branches": 3,
+			"fixed": 0.35, "blocked": 7 + i / 2,
+			"decoys": 0.88, "decoy_types": [T.STRAIGHT, T.CORNER, T.TEE, T.CROSS],
+			"limit": 2,
+		}
+		specs.append(_spec(8, 10, Vector2i(20 + i / 2, 25 + i / 2), Vector2i(28 + i, 46 + i), extra))
+	# 91–100 Terminus: everything combined at its hardest.
+	for i in 10:
+		var extra := {
+			"branches": 3,
+			"fixed": 0.38, "blocked": 8 + i / 2,
+			"decoys": 0.9, "decoy_types": [T.STRAIGHT, T.CORNER, T.TEE, T.CROSS],
+			"limit": 2 if i < 5 else -1,
+		}
+		specs.append(_spec(8, 10, Vector2i(22 + i / 2, 28 + i / 2), Vector2i(32 + i, 52 + i), extra))
 	return specs
 
 
@@ -171,26 +239,119 @@ func _daily_specs() -> Array[Dictionary]:
 
 func _overclock_specs() -> Array[Dictionary]:
 	var specs: Array[Dictionary] = []
-	for i in 20:
-		var w := 6 if i < 8 else 7
-		var h := 8 if i < 8 else 9
-		specs.append(_spec(w, h, Vector2i(14 + i / 4, 18 + i / 4), Vector2i(20 + i / 2, 34 + i), {
-			"branches": 2 + i / 10,
-			"fixed": 0.3, "blocked": 4 + i / 4,
+	for i in 60:
+		var w := 6 if i < 20 else (7 if i < 40 else 8)
+		var h := 8 if i < 20 else (9 if i < 40 else 10)
+		var len_min := 14 + i / 3
+		var len_max := len_min + 4
+		specs.append(_spec(w, h, Vector2i(len_min, len_max), Vector2i(maxi(10, len_min - 4), len_max + 20), {
+			"branches": 2 if i < 30 else 3,
+			"fixed": 0.3, "blocked": 4 + i / 8,
 			"decoys": 0.85, "decoy_types": [T.STRAIGHT, T.CORNER, T.TEE, T.CROSS],
 			"limit": 3 if i % 3 != 0 else -1,
 		}))
 	return specs
 
 
+## Fields: w, h, arm_len (cells per gate arm, root included [min, max]), decoys, decoy_types,
+## blocked, fixed (fraction of arm tiles), limit (move-limit slack, -1 = none), par ([min, max]).
+func _gate_spec(w: int, h: int, arm_range: Vector2i, par_range: Vector2i, extra: Dictionary = {}) -> Dictionary:
+	var spec := {
+		"w": w, "h": h, "arm_len": arm_range, "par": par_range,
+		"decoys": 0.0, "decoy_types": [T.STRAIGHT, T.CORNER],
+		"blocked": 0, "fixed": 0.0, "limit": -1,
+	}
+	spec.merge(extra, true)
+	return spec
+
+
+func _logic_gate_specs() -> Array[Dictionary]:
+	var specs: Array[Dictionary] = []
+	# 1-20: bare two-input gate on a roomy grid, light decoys.
+	for i in 20:
+		specs.append(_gate_spec(5, 5, Vector2i(2, 3 + i / 8), Vector2i(4, 10 + i), {"decoys": 0.15 + i * 0.015}))
+	# 21-40: tighter grids, three-way decoys, some fixed arm tiles.
+	for i in 20:
+		specs.append(_gate_spec(6, 7, Vector2i(3, 5 + i / 10), Vector2i(8 + i / 2, 18 + i), {
+			"decoys": 0.4 + i * 0.01, "decoy_types": [T.STRAIGHT, T.CORNER, T.TEE], "fixed": 0.15 + i * 0.005,
+		}))
+	# 41-60: blocked cells and move limits join fixed tiles, four-way decoys, and a growing grid.
+	for i in 20:
+		var w := 6 if i < 7 else (7 if i < 14 else 8)
+		var h := 7 if i < 7 else (8 if i < 14 else 10)
+		specs.append(_gate_spec(w, h, Vector2i(4, 8 + i / 6), Vector2i(6, 40 + i), {
+			"decoys": 0.55, "decoy_types": [T.STRAIGHT, T.CORNER, T.TEE, T.CROSS],
+			"fixed": 0.2, "blocked": 2 + i / 4, "limit": 4 if i % 3 != 0 else -1,
+		}))
+	return specs
+
+
+func _circuit_breaker_specs() -> Array[Dictionary]:
+	var specs: Array[Dictionary] = []
+	# 1-20: two destinations on every circuit, moderate decoys, a few blocked ("broken") cells.
+	for i in 20:
+		var w := 5 if i < 10 else 6
+		var h := 6 if i < 10 else 7
+		specs.append(_spec(w, h, Vector2i(10 + i / 3, 14 + i / 3), Vector2i(9 + i, 18 + i), {
+			"branches": 1, "fixed": 0.15 + i * 0.005, "blocked": 1 + i / 5,
+			"decoys": 0.55 + i * 0.01, "decoy_types": [T.STRAIGHT, T.CORNER, T.TEE],
+		}))
+	# 21-40: a third destination joins, tighter move limits ("overloaded paths").
+	for i in 20:
+		var w := 6 if i < 10 else 7
+		var h := 7 if i < 10 else 8
+		specs.append(_spec(w, h, Vector2i(13 + i / 3, 17 + i / 3), Vector2i(13 + i, 24 + i), {
+			"branches": 2, "fixed": 0.25, "blocked": 3 + i / 4,
+			"decoys": 0.65, "decoy_types": [T.STRAIGHT, T.CORNER, T.TEE, T.CROSS],
+			"limit": 4 if i % 2 == 0 else 3,
+		}))
+	# 41-60: full-size grids, three destinations, heavy blocked load and tight limits.
+	for i in 20:
+		var w := 7 if i < 10 else 8
+		var h := 9 if i < 10 else 10
+		specs.append(_spec(w, h, Vector2i(16 + i / 3, 21 + i / 3), Vector2i(18 + i, 32 + i), {
+			"branches": 3, "fixed": 0.3, "blocked": 5 + i / 3,
+			"decoys": 0.75, "decoy_types": [T.STRAIGHT, T.CORNER, T.TEE, T.CROSS],
+			"limit": 2,
+		}))
+	return specs
+
+
+func _quantum_protocol_specs() -> Array[Dictionary]:
+	var specs: Array[Dictionary] = []
+	# 1-20: the AND gate joins splitter decoys (three/four-way tiles); every level has a move limit.
+	for i in 20:
+		specs.append(_gate_spec(6, 6, Vector2i(2, 5 + i / 6), Vector2i(3, 24 + i), {
+			"decoys": 0.35 + i * 0.015, "decoy_types": [T.STRAIGHT, T.CORNER, T.TEE, T.CROSS],
+			"fixed": 0.1, "limit": 6 if i < 10 else 5,
+		}))
+	# 21-40: bigger grids, blocked cells, tighter limits.
+	for i in 20:
+		var w := 6 if i < 10 else 7
+		var h := 7 if i < 10 else 8
+		specs.append(_gate_spec(w, h, Vector2i(3, 7 + i / 6), Vector2i(5, 34 + i), {
+			"decoys": 0.55, "decoy_types": [T.STRAIGHT, T.CORNER, T.TEE, T.CROSS],
+			"fixed": 0.2, "blocked": 2 + i / 5, "limit": 4,
+		}))
+	# 41-60: full-size grids, the heaviest decoy/blocked load, a very tight move limit.
+	for i in 20:
+		var w := 7 if i < 10 else 8
+		var h := 9 if i < 10 else 10
+		specs.append(_gate_spec(w, h, Vector2i(4, 9 + i / 6), Vector2i(8, 44 + i), {
+			"decoys": 0.65, "decoy_types": [T.STRAIGHT, T.CORNER, T.TEE, T.CROSS],
+			"fixed": 0.25, "blocked": 4 + i / 4, "limit": 3,
+		}))
+	return specs
+
+
 # --- Generation ------------------------------------------------------------------------------
 
-func _build_pack(pack_id: String, pack_seed: int, specs: Array[Dictionary], names: Array, id_format: String) -> Array[PuzzleData]:
+func _build_pack(pack_id: String, pack_seed: int, specs: Array[Dictionary], names: Array, id_format: String, designer: Callable = Callable(self, "_try_design")) -> Array[PuzzleData]:
 	var puzzles: Array[PuzzleData] = []
 	for i in specs.size():
 		var puzzle_id := id_format % (i + 1)
 		var started := Time.get_ticks_msec()
-		var puzzle := _design(specs[i], pack_seed * 100003 + i * 7919, puzzle_id)
+		var puzzle := _design(specs[i], pack_seed * 100003 + i * 7919, puzzle_id, designer)
 		if puzzle == null:
 			print("  FAILED %s" % puzzle_id)
 			_failures.append("%s: could not design %s within %d attempts" % [pack_id, puzzle_id, MAX_ATTEMPTS])
@@ -208,11 +369,11 @@ func _build_pack(pack_id: String, pack_seed: int, specs: Array[Dictionary], name
 	return puzzles
 
 
-func _design(spec: Dictionary, base_seed: int, puzzle_id: String) -> PuzzleData:
+func _design(spec: Dictionary, base_seed: int, puzzle_id: String, designer: Callable) -> PuzzleData:
 	var rng := RandomNumberGenerator.new()
 	for attempt in MAX_ATTEMPTS:
 		rng.seed = base_seed + attempt * 104729
-		var puzzle := _try_design(spec, rng)
+		var puzzle: PuzzleData = designer.call(spec, rng)
 		if puzzle != null:
 			puzzle.id = puzzle_id
 		if puzzle == null:
@@ -255,6 +416,12 @@ func _try_design(spec: Dictionary, rng: RandomNumberGenerator) -> PuzzleData:
 		if not _add_branch(board, route, used, edges, endpoints, rng):
 			return null
 
+	return _finish_puzzle(w, h, edges, endpoints, spec, rng)
+
+
+## Shared tail for every designer: assigns tile types from connection masks, scatters blocked
+## cells and decoys in the free space, scrambles non-fixed route tiles, and computes par/limit.
+func _finish_puzzle(w: int, h: int, edges: Dictionary, endpoints: Dictionary, spec: Dictionary, rng: RandomNumberGenerator) -> PuzzleData:
 	# 3. Route tiles from their connection masks.
 	var puzzle := PuzzleData.new()
 	puzzle.width = w
@@ -324,6 +491,39 @@ func _try_design(spec: Dictionary, rng: RandomNumberGenerator) -> PuzzleData:
 	if slack >= 0:
 		puzzle.move_limit = puzzle.par + slack
 	return puzzle
+
+
+## AND-gate topology: one GATE_AND root with three disjoint self-avoiding arms growing out of it
+## (two ending in SOURCE, one in DESTINATION). The gate only forwards signal once both inputs
+## are independently powered, so a puzzle here is unsolvable unless both source arms connect.
+func _design_gate_puzzle(spec: Dictionary, rng: RandomNumberGenerator) -> PuzzleData:
+	var w: int = spec["w"]
+	var h: int = spec["h"]
+	var arm_range: Vector2i = spec["arm_len"]
+	var board := BoardState.new(w, h)
+
+	var root_cell := Vector2i(rng.randi_range(0, w - 1), rng.randi_range(0, h - 1))
+	var root := board.index_of(root_cell)
+	var visited := {root: true}
+	var arms: Array[Array] = []
+	for a in 3:
+		var arm: Array[int] = [root]
+		var budget := [3000]
+		if not _extend(board, arm, visited, rng.randi_range(arm_range.x, arm_range.y), rng, budget):
+			return null
+		arms.append(arm)
+
+	var edges := {}
+	for arm: Array in arms:
+		for k in arm.size() - 1:
+			_link(board, edges, arm[k], arm[k + 1])
+	var endpoints := {
+		root: T.GATE_AND,
+		arms[0][arms[0].size() - 1]: T.SOURCE,
+		arms[1][arms[1].size() - 1]: T.SOURCE,
+		arms[2][arms[2].size() - 1]: T.DESTINATION,
+	}
+	return _finish_puzzle(w, h, edges, endpoints, spec, rng)
 
 
 ## Self-avoiding random route of exactly `length` cells, found by randomized depth-first search.

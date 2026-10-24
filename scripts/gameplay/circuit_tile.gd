@@ -11,6 +11,7 @@ const PULSE_TIME := 0.45
 var index: int = -1
 var tile_type: int = TileTypes.Type.EMPTY
 var connections: int = 0
+var gate_output_bit: int = 0
 var is_fixed: bool = false
 var powered: bool = false
 var solved: bool = false
@@ -32,17 +33,19 @@ func _ready() -> void:
 	resized.connect(queue_redraw)
 
 
-func setup(cell_index: int, type: int, mask: int, fixed_tile: bool) -> void:
+func setup(cell_index: int, type: int, mask: int, fixed_tile: bool, gate_bit: int = 0) -> void:
 	index = cell_index
 	tile_type = type
 	connections = mask
+	gate_output_bit = gate_bit
 	is_fixed = fixed_tile
 	queue_redraw()
 
 
 ## Updates the mask. With `animate`, the new shape spins in from the previous orientation.
-func set_connections(mask: int, animate: bool) -> void:
+func set_connections(mask: int, animate: bool, gate_bit: int = 0) -> void:
 	connections = mask
+	gate_output_bit = gate_bit
 	if animate and not SaveService.progress.reduced_motion:
 		_kill_tween()
 		_spin = -PI * 0.5
@@ -177,6 +180,8 @@ func _draw() -> void:
 			_draw_source(s)
 		TileTypes.Type.DESTINATION:
 			_draw_destination(s)
+		TileTypes.Type.GATE_AND:
+			_draw_gate_and(s)
 		_:
 			if connections != 0:
 				draw_circle(Vector2.ZERO, width * 0.7, _line_color())
@@ -206,6 +211,24 @@ func _draw_destination(s: float) -> void:
 		draw_circle(Vector2.ZERO, s * 0.055, Palette.TEXT)
 	else:
 		draw_circle(Vector2.ZERO, s * 0.06, Color(Palette.CIRCUIT_IDLE, 0.7))
+
+
+## Diamond glyph: dim violet until both input sides are powered, then glows and marks the output side.
+func _draw_gate_and(s: float) -> void:
+	var active := powered
+	var diamond := PackedVector2Array([
+		Vector2(0, -s * 0.24), Vector2(s * 0.24, 0), Vector2(0, s * 0.24), Vector2(-s * 0.24, 0),
+	])
+	if active:
+		var halo := s * (0.9 + 0.2 * _pulse)
+		draw_texture_rect(Palette.glow_texture(), Rect2(Vector2(-halo, -halo) * 0.5, Vector2(halo, halo)), false, Color(Palette.ACCENT, 0.55))
+	draw_colored_polygon(diamond, Palette.ACCENT if active else Color(Palette.ACCENT, 0.4))
+	draw_polyline(diamond + PackedVector2Array([diamond[0]]), Color(Palette.TEXT, 0.8 if active else 0.35), s * 0.02, true)
+	if gate_output_bit != 0:
+		var output_direction := TileTypes.DIRECTION_BITS.find(gate_output_bit)
+		if output_direction >= 0:
+			var offset := Vector2(TileTypes.DIRECTION_OFFSETS[output_direction])
+			draw_circle(offset * s * 0.32, s * 0.045, Palette.TEXT if active else Color(Palette.TEXT, 0.5))
 
 
 func _line_color() -> Color:

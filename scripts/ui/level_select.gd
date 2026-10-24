@@ -93,6 +93,9 @@ func _build() -> void:
 
 func _on_level_pressed(puzzle: PuzzleData) -> void:
 	if not GameManager.can_play(puzzle):
+		if _pack.kind == "premium":
+			_remember_scroll()
+			SceneRouter.goto(SceneRouter.PACK_STORE)
 		return
 	_remember_scroll()
 	GameManager.play(puzzle, GameManager.Mode.CAMPAIGN if _pack.kind == "campaign" else GameManager.Mode.PACK)

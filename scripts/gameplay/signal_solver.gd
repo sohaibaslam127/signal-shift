@@ -4,6 +4,11 @@ extends RefCounted
 ## A signal moves from tile A to neighbour B in direction d only if A connects in d and
 ## B connects in the opposite direction. Blocked tiles never carry signal. Each tile is
 ## visited at most once, so loops and branches terminate.
+##
+## Gate tiles (TileTypes.is_gate) are the one exception to plain bidirectional propagation:
+## a gate only forwards signal out of its single output side, and only once every one of its
+## other connected sides has independently received power. Power arriving on a gate's output
+## side never activates it (no backward flow).
 
 
 class Result:
@@ -39,6 +44,9 @@ static func solve(board: BoardState) -> Result:
 		result.powered[source] = 1
 		result.distance[source] = 0
 
+	## Gate index -> bitmask of its input sides that have been powered so far.
+	var gate_satisfied := {}
+
 	var head := 0
 	while head < queue.size():
 		var current := queue[head]
@@ -49,9 +57,14 @@ static func solve(board: BoardState) -> Result:
 		var mask := board.connections_at(current)
 		if mask == 0:
 			continue
+		var current_output_bit := TileTypes.gate_output_bit(board.get_type(current), board.get_rotation(current))
 		var cell := board.cell_of(current)
 		for direction in 4:
-			if mask & TileTypes.DIRECTION_BITS[direction] == 0:
+			var bit := TileTypes.DIRECTION_BITS[direction]
+			if mask & bit == 0:
+				continue
+			# A gate only ever forwards power out of its output side.
+			if current_output_bit != 0 and bit != current_output_bit:
 				continue
 			var neighbour_cell := cell + TileTypes.DIRECTION_OFFSETS[direction]
 			if not board.in_bounds(neighbour_cell):
@@ -62,8 +75,19 @@ static func solve(board: BoardState) -> Result:
 			if board.get_type(neighbour) == TileTypes.Type.BLOCKED:
 				continue
 			var back_bit := TileTypes.DIRECTION_BITS[TileTypes.opposite_direction(direction)]
-			if board.connections_at(neighbour) & back_bit == 0:
+			var neighbour_mask := board.connections_at(neighbour)
+			if neighbour_mask & back_bit == 0:
 				continue
+			var neighbour_output_bit := TileTypes.gate_output_bit(board.get_type(neighbour), board.get_rotation(neighbour))
+			if neighbour_output_bit != 0:
+				if back_bit == neighbour_output_bit:
+					# Power cannot enter a gate through its own output side.
+					continue
+				var satisfied: int = int(gate_satisfied.get(neighbour, 0)) | back_bit
+				gate_satisfied[neighbour] = satisfied
+				var input_bits := neighbour_mask & (TileTypes.ALL ^ neighbour_output_bit)
+				if satisfied & input_bits != input_bits:
+					continue
 			result.powered[neighbour] = 1
 			result.distance[neighbour] = result.distance[current] + 1
 			queue.append(neighbour)

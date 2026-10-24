@@ -5,6 +5,9 @@ extends Node
 
 const LOAD_TIMEOUT := 8.0
 const UNAVAILABLE_MESSAGE := "Videos aren't available right now. You can keep playing — solve the Daily Puzzle for a free hint."
+## Placements that count toward the every-5th-ad forced break (bonus_moves and forced_break itself do not).
+const COUNTABLE_PLACEMENTS := ["hint", "pack_unlock"]
+const FORCED_BREAK_EVERY := 5
 
 var backend: AdsBackend = AdsBackend.new()
 var _busy := false
@@ -37,7 +40,19 @@ func request_reward(placement: String) -> Dictionary:
 	var outcome := await _run(placement)
 	_busy = false
 	AudioServer.set_bus_mute(0, false)
+	if outcome["granted"] and placement in COUNTABLE_PLACEMENTS:
+		_register_countable_reward()
 	return outcome
+
+
+## Tracks the every-5th-ad forced break for non-Supporter players. The break itself shows
+## later, only once the player is back in a level (see GameHud._show_forced_ad_if_pending).
+func _register_countable_reward() -> void:
+	var progress := SaveService.progress
+	progress.rewarded_ad_count += 1
+	if not PurchaseService.is_supporter() and progress.rewarded_ad_count % FORCED_BREAK_EVERY == 0:
+		progress.pending_forced_ad = true
+	SaveService.save_progress()
 
 
 func _run(placement: String) -> Dictionary:

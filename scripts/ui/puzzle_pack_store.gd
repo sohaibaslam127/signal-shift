@@ -58,7 +58,12 @@ func _rebuild() -> void:
 
 
 func _add_pack_card(pack: LevelCatalog.Pack) -> void:
-	var owned := PurchaseService.owns(pack.product_id)
+	var progress := SaveService.progress
+	var supporter := PurchaseService.is_supporter()
+	var chosen_free := supporter and pack.id == progress.premium_bonus_pack_id
+	var owned := PurchaseService.owns(pack.product_id) or chosen_free
+	var unlocked_count := progress.free_levels_unlocked(pack.id, GameManager.FREE_PREVIEW_LEVELS)
+	var ad_unlocked_all := unlocked_count >= pack.puzzles.size()
 	var card := _card("AccentCard")
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 20)
@@ -74,12 +79,35 @@ func _add_pack_card(pack: LevelCatalog.Pack) -> void:
 	row.add_child(box)
 	_label(box, pack.title, &"HeadingLabel")
 	_label(box, pack.description, &"DimLabel")
-	_label(box, "%d levels%s" % [pack.puzzles.size(), " · Owned" if owned else ""], &"StatLabel")
-	if owned:
+	var status := " · Owned" if owned else (" · Fully unlocked" if ad_unlocked_all else "")
+	_label(box, "%d levels%s" % [pack.puzzles.size(), status], &"StatLabel")
+	if owned or ad_unlocked_all:
 		_button(box, "Play", _open_pack.bind(pack.id), &"PrimaryButton")
 	else:
-		_button(box, "Try Level 1 Free", func() -> void: GameManager.play(pack.puzzles[0], GameManager.Mode.PACK), &"")
+		_button(box, "Try %d Levels Free" % mini(GameManager.FREE_PREVIEW_LEVELS, pack.puzzles.size()), func() -> void: GameManager.play(pack.puzzles[0], GameManager.Mode.PACK), &"")
+		if AdsService.is_available():
+			_button(box, "Watch Ad to Unlock Level %d" % (unlocked_count + 1), _on_watch_pack_ad.bind(pack.id), &"AccentButton")
 		_buy_button(box, pack.product_id)
+		if supporter and progress.premium_bonus_pack_id.is_empty():
+			_button(box, "Unlock Free as Supporter", _choose_free_pack.bind(pack.id), &"PrimaryButton")
+
+
+func _on_watch_pack_ad(pack_id: String) -> void:
+	var outcome: Dictionary = await AdsService.request_reward("pack_unlock")
+	if not is_inside_tree():
+		return
+	if outcome["granted"]:
+		GameManager.unlock_next_pack_level_via_ad(pack_id)
+		_rebuild()
+	else:
+		_message("No video available", outcome["message"])
+
+
+## One premium pack, chosen once, unlocked in full as a Supporter-purchase perk.
+func _choose_free_pack(pack_id: String) -> void:
+	SaveService.progress.premium_bonus_pack_id = pack_id
+	SaveService.save_progress()
+	_rebuild()
 
 
 func _buy_button(parent: Control, product_id: String) -> Button:

@@ -118,6 +118,37 @@ func test_no_destination_is_not_solved() -> void:
 	assert_false(SignalSolver.solve(_board(["S1 I1"])).is_solved(), "no destination")
 
 
+func test_gate_requires_both_inputs() -> void:
+	var board := _board([
+		". S2 .",
+		". G0 D3",
+		". S0 .",
+	])
+	var result := SignalSolver.solve(board)
+	assert_true(result.is_solved(), "gate activates once both inputs are wired")
+	assert_true(result.is_powered(4), "gate itself is marked powered once activated")
+
+
+func test_gate_single_input_does_not_activate() -> void:
+	var board := _board([
+		". S2 .",
+		". G0 D3",
+		". .  .",
+	])
+	var result := SignalSolver.solve(board)
+	assert_false(result.is_powered(4), "one input is not enough")
+	assert_false(result.is_solved(), "destination unreached with only one input")
+
+
+func test_gate_output_bit_rotates_with_tile() -> void:
+	assert_eq(TileTypes.gate_output_bit(T.GATE_AND, 0), TileTypes.RIGHT, "base output faces right")
+	assert_eq(TileTypes.gate_output_bit(T.GATE_AND, 1), TileTypes.DOWN, "one step clockwise")
+	assert_eq(TileTypes.gate_output_bit(T.GATE_AND, 2), TileTypes.LEFT, "two steps")
+	assert_eq(TileTypes.gate_output_bit(T.GATE_AND, 3), TileTypes.UP, "three steps")
+	assert_eq(TileTypes.gate_input_bits(T.GATE_AND, 0), TileTypes.UP | TileTypes.DOWN, "the other two sides are inputs")
+	assert_eq(TileTypes.gate_output_bit(T.STRAIGHT, 0), 0, "non-gate types report no output bit")
+
+
 func test_snapshot_restore() -> void:
 	var board := _board(["S1 L0 L1 D3"])
 	var snap := board.snapshot()

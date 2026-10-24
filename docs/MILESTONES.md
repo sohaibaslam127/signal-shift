@@ -102,3 +102,11 @@ Notes: plugin APIs must be verified against the exact plugin versions that get i
 - [x] `docs/PRIVACY_POLICY.md`, `docs/STORE_LISTING.md`, `docs/RELEASE_CHECKLIST.md`.
 - [x] `--export-pack` dry run verified: puzzles JSON included, tests/tools/docs excluded.
 - [ ] Signed release builds (needs export templates, Android keystore, Apple developer team ID — not available on this machine).
+
+## Milestone 11 — Logic Gates pack (AND gate mechanic)
+
+- [x] `TileTypes.GATE_AND`: a three-way tile with one output side and two input sides (rotation-relative); `gate_output_bit`/`gate_input_bits` helpers.
+- [x] `SignalSolver`: gates forward only out their output side, and only once both input sides are independently powered; power cannot enter through the output side.
+- [x] `CircuitTile`/`PuzzleBoard`: violet diamond glyph, dim until both inputs are satisfied.
+- [x] `tools/generate_levels.gd`: new dual-source/single-gate topology designer; 18 verified puzzles in `resources/puzzles/packs/logic_gates.json`, registered as a premium pack in `catalog.json`.
+- [x] Tests: gate requires both inputs, single input insufficient, output-side rotation math, shipped pack validates and uses exactly one gate + two sources per puzzle.

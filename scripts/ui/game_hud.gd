@@ -43,10 +43,12 @@ func _ready() -> void:
 	_title.text = "Daily Puzzle" if GameManager.current_mode == GameManager.Mode.DAILY else puzzle.name
 	_chapter.text = _subtitle_for(puzzle)
 	_par.text = str(puzzle.par)
+	GameManager.refresh_daily_hints()
 	controller.start(puzzle)
 	_board.bind(controller)
 	_update_buttons()
 	_add_tutorial_tip(puzzle)
+	_show_forced_ad_if_pending()
 
 
 ## Onboarding for the first campaign levels: one line, gone once the level is solved.
@@ -127,8 +129,6 @@ func _on_hint() -> void:
 		SaveService.save_progress()
 		SignalBus.hint_tokens_changed.emit(progress.hint_tokens)
 		_apply_hint()
-	elif PurchaseService.is_supporter():
-		_apply_hint()
 	else:
 		_offer_hint_video()
 
@@ -150,6 +150,17 @@ func _watch_hint_video() -> void:
 		_update_buttons()
 	else:
 		_show_message("No video available", outcome["message"])
+
+
+## Every 5th rewarded ad (hints + pack unlocks) owes one forced, unrewarded ad break for
+## non-Supporter players. It only ever shows here, in a level, never as a surprise elsewhere.
+func _show_forced_ad_if_pending() -> void:
+	var progress := SaveService.progress
+	if not progress.pending_forced_ad or PurchaseService.is_supporter():
+		return
+	progress.pending_forced_ad = false
+	SaveService.save_progress()
+	await AdsService.request_reward("forced_break")
 
 
 func _apply_hint() -> void:
@@ -205,7 +216,7 @@ func _go_to_levels() -> void:
 func _on_won(moves: int, stars: int) -> void:
 	_board.interactive = false
 	_update_buttons()
-	var outcome := GameManager.complete_current(moves, stars)
+	var outcome := GameManager.complete_current(moves, stars, controller.hints_used)
 	AudioService.play(&"win")
 	AudioService.haptic(40)
 	await get_tree().create_timer(0.1 if SaveService.progress.reduced_motion else 0.7).timeout

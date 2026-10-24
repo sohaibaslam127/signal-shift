@@ -2,6 +2,9 @@
 	"packs": [
 		{ "id": "campaign", "file": "res://resources/puzzles/campaign/campaign.json", "kind": "campaign" },
 		{ "id": "daily", "file": "res://resources/puzzles/daily/daily.json", "kind": "daily" },
-		{ "id": "overclock", "file": "res://resources/puzzles/packs/overclock.json", "kind": "premium", "product_id": "pack_overclock", "accent": "#8b6cff" }
+		{ "id": "overclock", "file": "res://resources/puzzles/packs/overclock.json", "kind": "premium", "product_id": "pack_overclock", "accent": "#8b6cff" },
+		{ "id": "logic_gates", "file": "res://resources/puzzles/packs/logic_gates.json", "kind": "premium", "product_id": "pack_logic_gates", "accent": "#6f42f5" },
+		{ "id": "circuit_breaker", "file": "res://resources/puzzles/packs/circuit_breaker.json", "kind": "premium", "product_id": "pack_circuit_breaker", "accent": "#ff6b7a" },
+		{ "id": "quantum_protocol", "file": "res://resources/puzzles/packs/quantum_protocol.json", "kind": "premium", "product_id": "pack_quantum_protocol", "accent": "#35e0f0" }
 	]
 }

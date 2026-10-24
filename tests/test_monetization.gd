@@ -129,7 +129,7 @@ func test_extend_moves_only_after_failure() -> void:
 
 func test_backend_detection_falls_back_safely() -> void:
 	ProjectSettings.set_setting("signal_shift/purchase_backend_script", "res://does/not/exist.gd")
-	ProjectSettings.set_setting("signal_shift/ads_backend_script", "res://tests/test_case.gd")  # wrong type
+	ProjectSettings.set_setting("signal_shift/ads_backend_script", "res://tests/test_case.gd") # wrong type
 	assert_false(_store.call("_detect_backend").is_available(), "missing adapter -> no billing")
 	assert_false(_ads.call("_detect_backend").is_available(), "wrong type -> no ads")
 	ProjectSettings.set_setting("signal_shift/ads_backend_script", "res://tests/fakes/fake_ads_backend.gd")

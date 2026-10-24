@@ -6,6 +6,9 @@ const FILES := {
 	"campaign": "res://resources/puzzles/campaign/campaign.json",
 	"daily": "res://resources/puzzles/daily/daily.json",
 	"overclock": "res://resources/puzzles/packs/overclock.json",
+	"logic_gates": "res://resources/puzzles/packs/logic_gates.json",
+	"circuit_breaker": "res://resources/puzzles/packs/circuit_breaker.json",
+	"quantum_protocol": "res://resources/puzzles/packs/quantum_protocol.json",
 }
 
 
@@ -33,14 +36,36 @@ func _movable_fixed(puzzle: PuzzleData) -> int:
 
 
 func test_all_packs_validate() -> void:
-	assert_eq(_load("campaign").puzzles.size(), 60, "60 campaign puzzles")
+	assert_eq(_load("campaign").puzzles.size(), 100, "100 campaign puzzles")
 	assert_eq(_load("daily").puzzles.size(), 90, "90 daily puzzles")
-	assert_eq(_load("overclock").puzzles.size(), 20, "20 overclock puzzles")
+	assert_eq(_load("overclock").puzzles.size(), 60, "60 overclock puzzles")
+	assert_eq(_load("logic_gates").puzzles.size(), 60, "60 logic gates puzzles")
+	assert_eq(_load("circuit_breaker").puzzles.size(), 60, "60 circuit breaker puzzles")
+	assert_eq(_load("quantum_protocol").puzzles.size(), 60, "60 quantum protocol puzzles")
+
+
+func test_logic_gates_use_the_gate_tile() -> void:
+	for puzzle in _load("logic_gates").puzzles:
+		var counts := _count_types(puzzle)
+		assert_eq(int(counts.get(T.GATE_AND, 0)), 1, "%s has exactly one gate" % puzzle.id)
+		assert_eq(int(counts.get(T.SOURCE, 0)), 2, "%s has two sources feeding the gate" % puzzle.id)
+
+
+func test_quantum_protocol_uses_the_gate_tile() -> void:
+	for puzzle in _load("quantum_protocol").puzzles:
+		var counts := _count_types(puzzle)
+		assert_eq(int(counts.get(T.GATE_AND, 0)), 1, "%s has exactly one gate" % puzzle.id)
+		assert_true(puzzle.has_move_limit(), "%s has a move limit" % puzzle.id)
+
+
+func test_circuit_breaker_routes_to_multiple_targets() -> void:
+	for puzzle in _load("circuit_breaker").puzzles:
+		assert_true(int(_count_types(puzzle).get(T.DESTINATION, 0)) >= 2, "%s has multiple destinations" % puzzle.id)
 
 
 func test_campaign_chapters() -> void:
 	var pack := _load("campaign")
-	assert_eq(pack.chapters.size(), 6, "six chapters")
+	assert_eq(pack.chapters.size(), 10, "ten chapters")
 	for chapter in pack.chapters:
 		assert_eq(int(chapter["count"]), 10, "ten levels per chapter")
 

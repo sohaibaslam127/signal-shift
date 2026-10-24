@@ -14,8 +14,21 @@ var unlocked_campaign_levels: int = 1
 var level_records: Dictionary = {}
 var last_played_level_id: String = ""
 var hint_tokens: int = STARTING_HINT_TOKENS
+## ISO date of the last daily hint-pool reset ("" if never reset yet).
+var hints_reset_date: String = ""
+## Hint-less-solve bonus grants already used since the last reset (see grant_hint_solve_bonus).
+var bonus_hint_events_today: int = 0
 ## ISO dates ("YYYY-MM-DD") of completed daily puzzles.
 var daily_completed: PackedStringArray = PackedStringArray()
+
+## Lifetime count of rewarded ads watched for a hint or a pack-level unlock (not other placements).
+var rewarded_ad_count: int = 0
+## Set every 5th countable rewarded ad for a non-Supporter player; cleared once shown in a level.
+var pending_forced_ad: bool = false
+## pack_id -> number of levels unlocked beyond the free preview by watching ads, one level per ad.
+var pack_ad_unlocks: Dictionary = {}
+## The single premium pack granted free on a Supporter purchase ("" if not chosen yet).
+var premium_bonus_pack_id: String = ""
 
 var sound_enabled: bool = true
 var music_enabled: bool = true
@@ -77,6 +90,38 @@ func add_hint_tokens(amount: int) -> void:
 	hint_tokens = clampi(hint_tokens + amount, 0, MAX_HINT_TOKENS)
 
 
+## Resets the daily hint pool to `baseline` once per calendar day. Any hints left over from
+## today (free top-ups included) are lost at the reset, matching the "never more than the
+## daily allowance carries over" rule. Returns true the first time this runs for `today_key`.
+func reset_daily_hints_if_needed(today_key: String, baseline: int) -> bool:
+	if hints_reset_date == today_key:
+		return false
+	hints_reset_date = today_key
+	hint_tokens = clampi(baseline, 0, MAX_HINT_TOKENS)
+	bonus_hint_events_today = 0
+	return true
+
+
+## Rewards solving a level without using a hint. Limited to `max_events` grants per day
+## (separate for free/Supporter players). Returns true if the bonus was granted.
+func grant_hint_solve_bonus(amount: int, max_events: int) -> bool:
+	if bonus_hint_events_today >= max_events:
+		return false
+	bonus_hint_events_today += 1
+	add_hint_tokens(amount)
+	return true
+
+
+## Levels of `pack_id` playable for free: the preview plus whatever has been ad-unlocked.
+func free_levels_unlocked(pack_id: String, preview_levels: int) -> int:
+	return preview_levels + maxi(0, int(pack_ad_unlocks.get(pack_id, 0)))
+
+
+## Unlocks exactly one more level of `pack_id` (the reward for watching a rewarded ad).
+func unlock_pack_level_via_ad(pack_id: String) -> void:
+	pack_ad_unlocks[pack_id] = int(pack_ad_unlocks.get(pack_id, 0)) + 1
+
+
 func total_stars(level_ids: PackedStringArray) -> int:
 	var total := 0
 	for level_id in level_ids:
@@ -91,7 +136,13 @@ func to_dict() -> Dictionary:
 		"level_records": level_records.duplicate(true),
 		"last_played_level_id": last_played_level_id,
 		"hint_tokens": hint_tokens,
+		"hints_reset_date": hints_reset_date,
+		"bonus_hint_events_today": bonus_hint_events_today,
 		"daily_completed": Array(daily_completed),
+		"rewarded_ad_count": rewarded_ad_count,
+		"pending_forced_ad": pending_forced_ad,
+		"pack_ad_unlocks": pack_ad_unlocks.duplicate(),
+		"premium_bonus_pack_id": premium_bonus_pack_id,
 		"settings": {
 			"sound_enabled": sound_enabled,
 			"music_enabled": music_enabled,
@@ -117,6 +168,18 @@ static func from_dict(data: Variant) -> ProgressionData:
 	result.unlocked_campaign_levels = maxi(1, _read_int(dict, "unlocked_campaign_levels", 1))
 	result.last_played_level_id = _read_string(dict, "last_played_level_id", "")
 	result.hint_tokens = clampi(_read_int(dict, "hint_tokens", STARTING_HINT_TOKENS), 0, MAX_HINT_TOKENS)
+	var reset_date := _read_string(dict, "hints_reset_date", "")
+	result.hints_reset_date = reset_date if reset_date.is_empty() or _is_date_key(reset_date) else ""
+	result.bonus_hint_events_today = maxi(0, _read_int(dict, "bonus_hint_events_today", 0))
+	result.rewarded_ad_count = maxi(0, _read_int(dict, "rewarded_ad_count", 0))
+	result.pending_forced_ad = _read_bool(dict, "pending_forced_ad", false)
+	result.premium_bonus_pack_id = _read_string(dict, "premium_bonus_pack_id", "")
+
+	var ad_unlocks: Variant = dict.get("pack_ad_unlocks", {})
+	if typeof(ad_unlocks) == TYPE_DICTIONARY:
+		for key: Variant in ad_unlocks:
+			if typeof(key) == TYPE_STRING:
+				result.pack_ad_unlocks[key] = maxi(0, _read_int(ad_unlocks, String(key), 0))
 
 	var records: Variant = dict.get("level_records", {})
 	if typeof(records) == TYPE_DICTIONARY:

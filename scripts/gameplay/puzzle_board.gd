@@ -61,7 +61,7 @@ func _build() -> void:
 	for i in board.cell_count():
 		var tile: CircuitTile = TILE_SCENE.instantiate()
 		add_child(tile)
-		tile.setup(i, board.get_type(i), board.connections_at(i), board.is_fixed(i))
+		tile.setup(i, board.get_type(i), board.connections_at(i), board.is_fixed(i), TileTypes.gate_output_bit(board.get_type(i), board.get_rotation(i)))
 		tile.interactive = interactive
 		tile.tapped.connect(_on_tile_tapped)
 		_tiles.append(tile)
@@ -122,10 +122,11 @@ func _refresh(changed_index: int, animate: bool) -> void:
 	for i in _tiles.size():
 		var tile := _tiles[i]
 		var mask := board.connections_at(i)
+		var gate_bit := TileTypes.gate_output_bit(board.get_type(i), board.get_rotation(i))
 		if i == changed_index:
-			tile.set_connections(mask, animate)
-		elif tile.connections != mask:
-			tile.set_connections(mask, false)
+			tile.set_connections(mask, animate, gate_bit)
+		elif tile.connections != mask or tile.gate_output_bit != gate_bit:
+			tile.set_connections(mask, false, gate_bit)
 		var is_powered := result.is_powered(i)
 		tile.set_powered(is_powered, solved)
 		if is_powered and _was_powered[i] == 0 and animate:

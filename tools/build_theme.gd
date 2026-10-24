@@ -20,7 +20,7 @@ func _initialize() -> void:
 	theme.default_font = _regular
 	theme.default_font_size = 30
 
-	_label_styles(theme)
+	_label_styles(theme)ye
 	_button_styles(theme)
 	_panel_styles(theme)
 	_scroll_styles(theme)

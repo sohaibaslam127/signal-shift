@@ -10,11 +10,23 @@ const SUPPORTER_ID := "supporter"
 const PRODUCTS := {
 	"pack_overclock": {
 		"title": "Overclock Pack",
-		"description": "20 expert circuits: multi-branch routes, fixed tiles and tight move limits.",
+		"description": "60 expert circuits: multi-branch routes, fixed tiles and tight move limits.",
+	},
+	"pack_logic_gates": {
+		"title": "Logic Gates Pack",
+		"description": "60 circuits built around the AND gate: wire both inputs before the signal can pass.",
+	},
+	"pack_circuit_breaker": {
+		"title": "Circuit Breaker Pack",
+		"description": "60 circuits built around broken wires and overloaded paths, routing power to multiple targets at once.",
+	},
+	"pack_quantum_protocol": {
+		"title": "Quantum Protocol Pack",
+		"description": "60 advanced circuits: splitters and relays synchronize multiple outputs, and every move counts.",
 	},
 	SUPPORTER_ID: {
 		"title": "Supporter",
-		"description": "Unlimited hints with no optional videos: when free hints run out, a hint is one tap. Signal Shift never shows forced ads either way.",
+		"description": "6 hints a day instead of 3, no forced ad breaks, a bigger no-hint solve bonus, and one premium pack of your choice unlocked in full.",
 	},
 }
 
