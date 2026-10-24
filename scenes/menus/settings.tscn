@@ -1,12 +1,12 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bvmsmicp4got0"]
 
-[ext_resource type="PackedScene" path="res://scenes/components/icon_button.tscn" id="icon_btn"]
-[ext_resource type="Script" path="res://scripts/ui/settings.gd" id="1_settings"]
-[ext_resource type="Script" path="res://scripts/ui/circuit_background.gd" id="2_bg"]
-[ext_resource type="Script" path="res://scripts/ui/safe_area_container.gd" id="3_safe"]
+[ext_resource type="Script" uid="uid://vfeu83a8q1fi" path="res://scripts/ui/settings.gd" id="1_settings"]
+[ext_resource type="Script" uid="uid://vkqaluu817xk" path="res://scripts/ui/circuit_background.gd" id="2_bg"]
+[ext_resource type="Script" uid="uid://dv88clkorbi28" path="res://scripts/ui/safe_area_container.gd" id="3_safe"]
 [ext_resource type="PackedScene" path="res://scenes/components/dialog.tscn" id="5_dialog"]
+[ext_resource type="PackedScene" path="res://scenes/components/icon_button.tscn" id="icon_btn"]
 
-[node name="Settings" type="Control"]
+[node name="Settings" type="Control" unique_id=376126426]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,7 +15,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_settings")
 
-[node name="Background" type="Control" parent="."]
+[node name="Background" type="Control" parent="." unique_id=1578824090]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -24,7 +24,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_bg")
 
-[node name="Safe" type="MarginContainer" parent="."]
+[node name="Safe" type="MarginContainer" parent="." unique_id=312145121]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,47 +33,46 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("3_safe")
 
-[node name="Column" type="VBoxContainer" parent="Safe"]
+[node name="Column" type="VBoxContainer" parent="Safe" unique_id=603006310]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Header" type="HBoxContainer" parent="Safe/Column"]
+[node name="Header" type="HBoxContainer" parent="Safe/Column" unique_id=811079348]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="BackButton" parent="Safe/Column/Header" instance=ExtResource("icon_btn")]
+[node name="BackButton" parent="Safe/Column/Header" unique_id=1862929049 instance=ExtResource("icon_btn")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 tooltip_text = "Back"
 theme_type_variation = &"RoundButton"
-icon_name = &"back"
 flat_face = true
 
-[node name="Title" type="Label" parent="Safe/Column/Header"]
+[node name="Title" type="Label" parent="Safe/Column/Header" unique_id=1746450513]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"HeadingLabel"
 text = "Settings"
 horizontal_alignment = 1
 
-[node name="HeaderBalance" type="Control" parent="Safe/Column/Header"]
+[node name="HeaderBalance" type="Control" parent="Safe/Column/Header" unique_id=693852341]
 custom_minimum_size = Vector2(104, 0)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Scroll" type="ScrollContainer" parent="Safe/Column"]
+[node name="Scroll" type="ScrollContainer" parent="Safe/Column" unique_id=1680450488]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="Rows" type="VBoxContainer" parent="Safe/Column/Scroll"]
+[node name="Rows" type="VBoxContainer" parent="Safe/Column/Scroll" unique_id=232252187]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 16
 
-[node name="Dialog" parent="." instance=ExtResource("5_dialog")]
+[node name="Dialog" parent="." unique_id=489818666 instance=ExtResource("5_dialog")]
 unique_name_in_owner = true
 layout_mode = 1

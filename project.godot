@@ -41,6 +41,10 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=1
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/admob/plugin.cfg")
+
 [gui]
 
 theme/custom="res://resources/themes/signal_theme.tres"
@@ -60,5 +64,7 @@ environment/defaults/default_clear_color=Color(0.039, 0.059, 0.122, 1)
 [signal_shift]
 
 ads_backend_script=""
+ads_backend_script.android="res://scripts/services/backends/admob_backend.gd"
+ads_backend_script.ios="res://scripts/services/backends/admob_backend.gd"
 purchase_backend_script=""
 privacy_policy_url="https://github.com/sohaibaslam127/signal-shift/blob/main/docs/PRIVACY_POLICY.md"
