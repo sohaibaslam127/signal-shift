@@ -6,6 +6,8 @@ const CURRENT_VERSION := 1
 const STARTING_HINT_TOKENS := 3
 const MAX_HINT_TOKENS := 99
 const MAX_DAILY_HISTORY := 400
+## Seconds between free hints earned from the main-menu video.
+const AD_HINT_COOLDOWN := 86400
 
 var version: int = CURRENT_VERSION
 ## Number of campaign levels the player may open (always at least 1).
@@ -20,6 +22,8 @@ var hints_reset_date: String = ""
 var bonus_hint_events_today: int = 0
 ## ISO dates ("YYYY-MM-DD") of completed daily puzzles.
 var daily_completed: PackedStringArray = PackedStringArray()
+## Unix time of the last free hint earned from the main-menu video (0 = never).
+var last_ad_hint_time: int = 0
 
 ## Lifetime count of rewarded ads watched for a hint or a pack-level unlock (not other placements).
 var rewarded_ad_count: int = 0
@@ -139,6 +143,7 @@ func to_dict() -> Dictionary:
 		"hints_reset_date": hints_reset_date,
 		"bonus_hint_events_today": bonus_hint_events_today,
 		"daily_completed": Array(daily_completed),
+		"last_ad_hint_time": last_ad_hint_time,
 		"rewarded_ad_count": rewarded_ad_count,
 		"pending_forced_ad": pending_forced_ad,
 		"pack_ad_unlocks": pack_ad_unlocks.duplicate(),
@@ -171,6 +176,7 @@ static func from_dict(data: Variant) -> ProgressionData:
 	var reset_date := _read_string(dict, "hints_reset_date", "")
 	result.hints_reset_date = reset_date if reset_date.is_empty() or _is_date_key(reset_date) else ""
 	result.bonus_hint_events_today = maxi(0, _read_int(dict, "bonus_hint_events_today", 0))
+	result.last_ad_hint_time = maxi(0, _read_int(dict, "last_ad_hint_time", 0))
 	result.rewarded_ad_count = maxi(0, _read_int(dict, "rewarded_ad_count", 0))
 	result.pending_forced_ad = _read_bool(dict, "pending_forced_ad", false)
 	result.premium_bonus_pack_id = _read_string(dict, "premium_bonus_pack_id", "")

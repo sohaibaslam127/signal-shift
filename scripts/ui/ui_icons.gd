@@ -37,17 +37,19 @@ static func draw_icon(ci: CanvasItem, name: StringName, c: Vector2, r: float, co
 		&"settings":
 			_gear(ci, c, r, color)
 		&"levels":
-			var cell := r * 0.82
-			var gap := r * 0.16
-			for y in 2:
-				for x in 2:
-					var origin := c + Vector2(x * (cell + gap) - cell - gap * 0.5, y * (cell + gap) - cell - gap * 0.5)
-					rounded_rect(ci, Rect2(origin, Vector2(cell, cell)), cell * 0.25, color)
+			var cell := r * 0.6
+			var gap := r * 0.17
+			for y in 3:
+				for x in 3:
+					var origin := c + Vector2((x - 1) * (cell + gap) - cell * 0.5, (y - 1) * (cell + gap) - cell * 0.5)
+					rounded_rect(ci, Rect2(origin, Vector2(cell, cell)), cell * 0.3, color)
 		&"packs":
-			var body := Rect2(c + Vector2(-r * 0.9, -r * 0.42), Vector2(r * 1.8, r * 1.3))
-			rounded_rect(ci, body, r * 0.22, color, false, w)
-			ci.draw_rect(Rect2(c + Vector2(-r * 0.36, -r * 0.82), Vector2(r * 0.72, r * 0.4)), color, false, w)
-			ci.draw_line(c + Vector2(-r * 0.12, r * 0.02), c + Vector2(r * 0.12, r * 0.02), color, w, true)
+			# Three stacked cards, back to front.
+			var card := Vector2(r * 1.5, r * 1.1)
+			for i in 3:
+				var rect := Rect2(c + Vector2(-card.x * 0.5, -card.y * 0.5 + (i - 1) * r * 0.36), card)
+				rounded_rect(ci, rect, r * 0.2, Palette.BACKGROUND_DEEP)
+				rounded_rect(ci, rect, r * 0.2, Color(color, 0.55 + 0.225 * i), false, w * 0.8)
 		&"daily":
 			var body := Rect2(c + Vector2(-r * 0.88, -r * 0.62), Vector2(r * 1.76, r * 1.6))
 			rounded_rect(ci, body, r * 0.25, color, false, w)
@@ -71,19 +73,63 @@ static func draw_icon(ci: CanvasItem, name: StringName, c: Vector2, r: float, co
 			ci.draw_rect(Rect2(c + Vector2(-r * 0.12, -r * 0.5), Vector2(r * 0.24, r * 1.35)), ribbon)
 			ci.draw_arc(c + Vector2(-r * 0.3, -r * 0.68), r * 0.24, 0.0, TAU, 16, color, w * 0.7, true)
 			ci.draw_arc(c + Vector2(r * 0.3, -r * 0.68), r * 0.24, 0.0, TAU, 16, color, w * 0.7, true)
+		&"steps":
+			# Two footprints: a sole and a heel each, offset diagonally.
+			for foot: Array in [[-0.42, -0.1], [0.42, 0.2]]:
+				var f := c + Vector2(r * foot[0], r * foot[1])
+				ci.draw_circle(f + Vector2(0, -r * 0.3), r * 0.3, color)
+				ci.draw_circle(f + Vector2(0, r * 0.5), r * 0.18, color)
+		&"target":
+			ci.draw_arc(c, r * 0.9, 0.0, TAU, 32, color, w * 0.8, true)
+			ci.draw_arc(c, r * 0.52, 0.0, TAU, 28, color, w * 0.8, true)
+			ci.draw_circle(c, r * 0.2, color)
+		&"check":
+			ci.draw_circle(c, r, color)
+			poly(ci, [c + Vector2(-r * 0.42, 0.0), c + Vector2(-r * 0.1, r * 0.34), c + Vector2(r * 0.46, -r * 0.34)], Palette.BACKGROUND_DEEP, w * 0.8)
+		&"shield":
+			var top := c + Vector2(0, -r * 0.9)
+			var pts := PackedVector2Array([top, c + Vector2(r * 0.8, -r * 0.55), c + Vector2(r * 0.8, r * 0.1), c + Vector2(0, r * 0.95), c + Vector2(-r * 0.8, r * 0.1), c + Vector2(-r * 0.8, -r * 0.55)])
+			ci.draw_colored_polygon(pts, color)
+			ci.draw_colored_polygon(PackedVector2Array([top + Vector2(0, r * 0.25), c + Vector2(r * 0.55, -r * 0.4), c + Vector2(r * 0.55, r * 0.05), c + Vector2(0, r * 0.65)]), Palette.BACKGROUND_DEEP)
+		&"sound":
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-r * 0.9, -r * 0.35), c + Vector2(-r * 0.4, -r * 0.35), c + Vector2(r * 0.1, -r * 0.8), c + Vector2(r * 0.1, r * 0.8), c + Vector2(-r * 0.4, r * 0.35), c + Vector2(-r * 0.9, r * 0.35)]), color)
+			ci.draw_arc(c + Vector2(r * 0.1, 0), r * 0.5, -PI * 0.3, PI * 0.3, 10, color, w * 0.8, true)
+			ci.draw_arc(c + Vector2(r * 0.1, 0), r * 0.9, -PI * 0.3, PI * 0.3, 12, color, w * 0.8, true)
+		&"music":
+			ci.draw_circle(c + Vector2(-r * 0.4, r * 0.55), r * 0.3, color)
+			ci.draw_circle(c + Vector2(r * 0.55, r * 0.35), r * 0.3, color)
+			ci.draw_line(c + Vector2(-r * 0.12, r * 0.5), c + Vector2(-r * 0.12, -r * 0.75), color, w, true)
+			ci.draw_line(c + Vector2(r * 0.83, r * 0.3), c + Vector2(r * 0.83, -r * 0.95), color, w, true)
+			ci.draw_line(c + Vector2(-r * 0.12, -r * 0.75), c + Vector2(r * 0.83, -r * 0.95), color, w * 1.3, true)
+		&"eye":
+			var lens := PackedVector2Array()
+			for i in 13:
+				var x := lerpf(-1.0, 1.0, i / 12.0)
+				lens.append(c + Vector2(x * r, -sqrt(maxf(0.0, 1.0 - x * x)) * r * 0.62))
+			for i in 13:
+				var x := lerpf(1.0, -1.0, i / 12.0)
+				lens.append(c + Vector2(x * r, sqrt(maxf(0.0, 1.0 - x * x)) * r * 0.62))
+			lens.append(lens[0])
+			ci.draw_polyline(lens, color, w * 0.8, true)
+			ci.draw_circle(c, r * 0.3, color)
+		&"phone":
+			rounded_rect(ci, Rect2(c + Vector2(-r * 0.5, -r * 0.9), Vector2(r, r * 1.8)), r * 0.2, color, false, w * 0.8)
+			ci.draw_circle(c + Vector2(0, r * 0.62), r * 0.08, color)
+		&"gauge":
+			ci.draw_circle(c, r * 0.95, color)
+			ci.draw_line(c, c + Vector2(r * 0.4, -r * 0.5), Palette.BACKGROUND_DEEP, w * 0.9, true)
+			ci.draw_circle(c, r * 0.14, Palette.BACKGROUND_DEEP)
 		&"close":
 			ci.draw_line(c + Vector2(-r * 0.6, -r * 0.6), c + Vector2(r * 0.6, r * 0.6), color, w, true)
 			ci.draw_line(c + Vector2(-r * 0.6, r * 0.6), c + Vector2(r * 0.6, -r * 0.6), color, w, true)
 
 
 static func _gear(ci: CanvasItem, c: Vector2, r: float, color: Color) -> void:
-	var points := PackedVector2Array()
 	var teeth := 8
-	for i in teeth * 4:
-		var angle := (i - 0.5) * TAU / (teeth * 4)
-		var outer := (i % 4) < 2
-		points.append(c + Vector2(cos(angle), sin(angle)) * r * (0.98 if outer else 0.74))
-	ci.draw_colored_polygon(points, color)
+	for i in teeth:
+		var dir := Vector2.from_angle(i * TAU / teeth)
+		ci.draw_line(c + dir * r * 0.62, c + dir * r * 0.9, color, r * 0.34, true)
+	ci.draw_circle(c, r * 0.72, color)
 	ci.draw_circle(c, r * 0.3, Palette.BACKGROUND_DEEP)
 
 

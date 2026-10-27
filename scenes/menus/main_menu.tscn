@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://scripts/ui/title_mark.gd" id="7_title"]
 [ext_resource type="Script" path="res://scripts/ui/menu_pill.gd" id="8_pill"]
 [ext_resource type="Script" path="res://scripts/ui/menu_card.gd" id="9_card"]
+[ext_resource type="PackedScene" path="res://scenes/components/dialog.tscn" id="99_dialog"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -130,8 +131,8 @@ theme_type_variation = &"CardButton"
 script = ExtResource("9_card")
 icon_name = &"gift"
 icon_color = Color(0.247059, 0.941176, 0.768627, 1)
-title = "Solve it for +1 free hint"
-chip_text = "Play"
+title = "Watch a video for +1 free hint"
+chip_text = "Watch"
 chip_style = 1
 show_chevron = false
 title_size = 30
@@ -193,3 +194,7 @@ theme_type_variation = &"DimLabel"
 theme_override_font_sizes/font_size = 20
 text = "v0.1.0"
 horizontal_alignment = 1
+
+[node name="Dialog" parent="." instance=ExtResource("99_dialog")]
+unique_name_in_owner = true
+layout_mode = 1

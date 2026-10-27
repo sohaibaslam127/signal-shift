@@ -82,6 +82,14 @@ func handle_back() -> void:
 	_open_pause()
 
 
+func _pause_footer(puzzle: PuzzleData) -> String:
+	if GameManager.current_mode == GameManager.Mode.DAILY:
+		return "DAILY PUZZLE · %s" % GameManager.current_daily_key
+	var pack := GameManager.catalog.get_pack(puzzle.pack_id)
+	var total := pack.puzzles.size() if pack != null else 0
+	return ("%s · LEVEL %d / %d" % [GameManager.chapter_title(puzzle), puzzle.pack_index + 1, total]).to_upper()
+
+
 func _subtitle_for(puzzle: PuzzleData) -> String:
 	if GameManager.current_mode == GameManager.Mode.DAILY:
 		return "%s · #%d" % [GameManager.current_daily_key, puzzle.pack_index + 1]
@@ -184,12 +192,15 @@ func _open_dialog() -> void:
 func _open_pause() -> void:
 	if _dialog.is_open() or SceneRouter.is_transitioning:
 		return
-	_dialog.prepare("Paused", controller.puzzle.name)
-	_dialog.add_button("Resume", _update_buttons, &"PrimaryButton")
+	var puzzle := controller.puzzle
+	_dialog.prepare("PAUSED", puzzle.name.to_upper(), Palette.CIRCUIT)
+	_dialog.set_header_icon(&"pause", Palette.CIRCUIT)
+	_dialog.add_button("RESUME", _update_buttons, &"PrimaryButton", &"play")
 	if controller.is_playing():
-		_dialog.add_button("Restart", _on_reset_from_menu)
-	_dialog.add_button("Settings", _open_settings_overlay)
-	_dialog.add_button("Level Select" if ResourceLoader.exists(SceneRouter.LEVEL_SELECT) else "Main Menu", _go_to_levels)
+		_dialog.add_button("RESTART", _on_reset_from_menu, &"", &"reset")
+	_dialog.add_button("SETTINGS", _open_settings_overlay, &"", &"settings")
+	_dialog.add_button("LEVEL SELECT" if ResourceLoader.exists(SceneRouter.LEVEL_SELECT) else "MAIN MENU", _go_to_levels, &"", &"levels")
+	_dialog.set_footer(_pause_footer(puzzle))
 	_open_dialog()
 
 

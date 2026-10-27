@@ -6,12 +6,15 @@ extends Control
 signal closed
 
 const BUTTON_SCENE := preload("res://scenes/components/secondary_button.tscn")
+const ICON_BUTTON_SCENE := preload("res://scenes/components/icon_button.tscn")
 
 var _title: Label
 var _body: Label
 var _content: VBoxContainer
 var _buttons: VBoxContainer
 var _panel: PanelContainer
+var _header: CenterContainer
+var _footer: Label
 
 
 func _init() -> void:
@@ -39,6 +42,10 @@ func _init() -> void:
 	column.add_theme_constant_override("separation", 22)
 	_panel.add_child(column)
 
+	_header = CenterContainer.new()
+	_header.visible = false
+	column.add_child(_header)
+
 	_title = Label.new()
 	_title.theme_type_variation = &"HeadingLabel"
 	_title.add_theme_font_size_override("font_size", 48)
@@ -61,12 +68,27 @@ func _init() -> void:
 	_buttons.add_theme_constant_override("separation", 14)
 	column.add_child(_buttons)
 
+	_footer = Label.new()
+	_footer.theme_type_variation = &"CaptionLabel"
+	_footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_footer.visible = false
+	column.add_child(_footer)
+
 
 ## Clears the dialog and sets its text. Add content and buttons, then call `popup()`.
-func prepare(title: String, body: String = "") -> ModalDialog:
+func prepare(title: String, body: String = "", body_color: Color = Color.TRANSPARENT) -> ModalDialog:
 	_title.text = title
 	_body.text = body
 	_body.visible = not body.is_empty()
+	if body_color.a > 0.0:
+		_body.add_theme_color_override("font_color", body_color)
+	else:
+		_body.remove_theme_color_override("font_color")
+	for child in _header.get_children():
+		_header.remove_child(child)
+		child.queue_free()
+	_header.visible = false
+	_footer.visible = false
 	for container: Control in [_content, _buttons]:
 		for child in container.get_children():
 			container.remove_child(child)
@@ -74,14 +96,41 @@ func prepare(title: String, body: String = "") -> ModalDialog:
 	return self
 
 
+## Shows a tinted icon tile above the title.
+func set_header_icon(icon: StringName, color: Color) -> void:
+	var tile := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(color, 0.14)
+	style.border_color = Color(color, 0.4)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(26)
+	style.set_content_margin_all(22)
+	tile.add_theme_stylebox_override("panel", style)
+	var glyph := IconGlyph.new()
+	glyph.custom_minimum_size = Vector2(44, 44)
+	glyph.icon_name = icon
+	glyph.color = color
+	tile.add_child(glyph)
+	_header.add_child(tile)
+	_header.visible = true
+
+
+func set_footer(text: String) -> void:
+	_footer.text = text
+	_footer.visible = not text.is_empty()
+
+
 func add_content(control: Control) -> void:
 	_content.add_child(control)
 
 
 ## Adds a button that closes the dialog and then runs `action`.
-func add_button(text: String, action: Callable, variation: StringName = &"") -> Button:
-	var button: Button = BUTTON_SCENE.instantiate()
+func add_button(text: String, action: Callable, variation: StringName = &"", icon: StringName = &"") -> Button:
+	var button: Button = BUTTON_SCENE.instantiate() if icon == &"" else ICON_BUTTON_SCENE.instantiate()
 	button.text = text
+	if icon != &"":
+		button.set("icon_name", icon)
+		button.theme_type_variation = &"Button"  # IconButton defaults to the HUD style.
 	if variation != &"":
 		button.theme_type_variation = variation
 	button.custom_minimum_size = Vector2(0, 108)

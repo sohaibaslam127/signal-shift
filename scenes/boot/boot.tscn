@@ -1,10 +1,10 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://h0nbojivyc3i"]
 
-[ext_resource type="Script" path="res://scripts/ui/boot.gd" id="1_boot"]
-[ext_resource type="Script" path="res://scripts/ui/circuit_background.gd" id="2_bg"]
-[ext_resource type="Script" path="res://scripts/ui/logo_mark.gd" id="3_logo"]
+[ext_resource type="Script" uid="uid://cpi0lc85y7a0l" path="res://scripts/ui/boot.gd" id="1_boot"]
+[ext_resource type="Script" uid="uid://vkqaluu817xk" path="res://scripts/ui/circuit_background.gd" id="2_bg"]
+[ext_resource type="Script" uid="uid://dg0xtef2dkyw3" path="res://scripts/ui/logo_mark.gd" id="3_logo"]
 
-[node name="Boot" type="Control"]
+[node name="Boot" type="Control" unique_id=1876620847]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,7 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_boot")
 
-[node name="Background" type="Control" parent="."]
+[node name="Background" type="Control" parent="." unique_id=822357452]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,7 +23,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("2_bg")
 
-[node name="Center" type="VBoxContainer" parent="."]
+[node name="Center" type="VBoxContainer" parent="." unique_id=236252314]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,13 +32,13 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="Logo" type="Control" parent="Center"]
+[node name="Logo" type="Control" parent="Center" unique_id=283961768]
 custom_minimum_size = Vector2(0, 220)
 layout_mode = 2
 mouse_filter = 2
 script = ExtResource("3_logo")
 
-[node name="Status" type="Label" parent="Center"]
+[node name="Status" type="Label" parent="Center" unique_id=1627929585]
 layout_mode = 2
 theme_type_variation = &"DimLabel"
 text = "Powering up…"

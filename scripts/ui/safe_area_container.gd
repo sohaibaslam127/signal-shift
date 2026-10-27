@@ -3,7 +3,7 @@ extends MarginContainer
 ## Full-screen margin container that keeps content clear of notches, rounded corners and
 ## system bars on mobile, plus a constant base gutter on every platform.
 
-@export var base_margin: int = 28
+@export var base_margin: int = 16
 
 
 func _ready() -> void:

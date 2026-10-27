@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/game/puzzle_board.tscn" id="4_board"]
 [ext_resource type="PackedScene" path="res://scenes/components/dialog.tscn" id="6_dialog"]
 [ext_resource type="PackedScene" path="res://scenes/components/icon_button.tscn" id="7_icon"]
+[ext_resource type="Script" path="res://scripts/ui/icon_glyph.gd" id="8_glyph"]
 
 [node name="Game" type="Control"]
 layout_mode = 3
@@ -45,6 +46,7 @@ theme_override_constants/separation = 12
 
 [node name="PauseButton" parent="Safe/Column/Header" instance=ExtResource("7_icon")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 72)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
@@ -53,13 +55,17 @@ theme_type_variation = &"RoundButton"
 icon_name = &"pause"
 flat_face = true
 
-[node name="TitleBox" type="VBoxContainer" parent="Safe/Column/Header"]
+[node name="TitlePill" type="PanelContainer" parent="Safe/Column/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_type_variation = &"ChipPanel"
+
+[node name="TitleBox" type="VBoxContainer" parent="Safe/Column/Header/TitlePill"]
+layout_mode = 2
 theme_override_constants/separation = 2
 alignment = 1
 
-[node name="LevelTitle" type="Label" parent="Safe/Column/Header/TitleBox"]
+[node name="LevelTitle" type="Label" parent="Safe/Column/Header/TitlePill/TitleBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"HeadingLabel"
@@ -68,7 +74,7 @@ text = "Level"
 horizontal_alignment = 1
 text_overrun_behavior = 3
 
-[node name="ChapterLabel" type="Label" parent="Safe/Column/Header/TitleBox"]
+[node name="ChapterLabel" type="Label" parent="Safe/Column/Header/TitlePill/TitleBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"DimLabel"
@@ -78,7 +84,7 @@ horizontal_alignment = 1
 text_overrun_behavior = 3
 
 [node name="HeaderBalance" type="Control" parent="Safe/Column/Header"]
-custom_minimum_size = Vector2(104, 0)
+custom_minimum_size = Vector2(72, 0)
 layout_mode = 2
 mouse_filter = 2
 
@@ -92,7 +98,16 @@ theme_type_variation = &"ChipPanel"
 
 [node name="Row" type="HBoxContainer" parent="Safe/Column/Stats/Chip"]
 layout_mode = 2
-theme_override_constants/separation = 44
+theme_override_constants/separation = 18
+
+[node name="MovesIcon" type="Control" parent="Safe/Column/Stats/Chip/Row"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+script = ExtResource("8_glyph")
+icon_name = &"reset"
+color = Color(0.207843, 0.878431, 0.941176, 1)
 
 [node name="MovesBox" type="VBoxContainer" parent="Safe/Column/Stats/Chip/Row"]
 layout_mode = 2
@@ -110,6 +125,19 @@ layout_mode = 2
 theme_type_variation = &"StatValue"
 text = "0"
 horizontal_alignment = 1
+
+[node name="Divider" type="VSeparator" parent="Safe/Column/Stats/Chip/Row"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ParIcon" type="Control" parent="Safe/Column/Stats/Chip/Row"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+script = ExtResource("8_glyph")
+icon_name = &"target"
+color = Color(0.207843, 0.878431, 0.941176, 1)
 
 [node name="ParBox" type="VBoxContainer" parent="Safe/Column/Stats/Chip/Row"]
 layout_mode = 2
@@ -157,19 +185,24 @@ theme_override_constants/margin_bottom = 12
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Toolbar" type="HBoxContainer" parent="Safe/Column"]
+[node name="ToolbarPanel" type="PanelContainer" parent="Safe/Column"]
+layout_mode = 2
+theme_type_variation = &"NavPanel"
+
+[node name="Toolbar" type="HBoxContainer" parent="Safe/Column/ToolbarPanel"]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="UndoButton" parent="Safe/Column/Toolbar" instance=ExtResource("7_icon")]
+[node name="UndoButton" parent="Safe/Column/ToolbarPanel/Toolbar" instance=ExtResource("7_icon")]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 124)
 layout_mode = 2
 size_flags_horizontal = 3
+theme_type_variation = &"AccentButton"
 icon_name = &"undo"
 caption = "Undo"
 
-[node name="ResetButton" parent="Safe/Column/Toolbar" instance=ExtResource("7_icon")]
+[node name="ResetButton" parent="Safe/Column/ToolbarPanel/Toolbar" instance=ExtResource("7_icon")]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 124)
 layout_mode = 2
@@ -177,11 +210,12 @@ size_flags_horizontal = 3
 icon_name = &"reset"
 caption = "Reset"
 
-[node name="HintButton" parent="Safe/Column/Toolbar" instance=ExtResource("7_icon")]
+[node name="HintButton" parent="Safe/Column/ToolbarPanel/Toolbar" instance=ExtResource("7_icon")]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 124)
 layout_mode = 2
 size_flags_horizontal = 3
+theme_type_variation = &"GoldButton"
 icon_name = &"hint"
 caption = "Hint"
 
