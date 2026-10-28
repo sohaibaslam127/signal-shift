@@ -1,0 +1,5 @@
+[
+	{"id":"q01","name":"Phase Shift","rules":"quantum","tip":"Portals teleport the signal. The ringed target needs the inverted phase.",
+	 "rows":["S1* I0 P0* . Q0",". . . . V1",". . . D0 P0*"],
+	 "solution":["11002","00000","00010"],"par":5}
+]

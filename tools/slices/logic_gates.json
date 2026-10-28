@@ -1,0 +1,5 @@
+[
+	{"id":"g01","name":"Odd One Out","rules":"logic","tip":"XOR lights only when exactly one input is on. Tap a switch to flip it.",
+	 "rows":[". W1 L2* .",". . Y0* D3*",". W1 L3* ."],
+	 "solution":["0120","0003","0030"],"par":1}
+]

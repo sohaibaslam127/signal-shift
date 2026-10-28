@@ -1,6 +1,6 @@
 # Signal Shift — Privacy Policy
 
-_Last updated: 2026-10-16_
+_Last updated: 2026-10-28_
 
 Signal Shift ("the game") is a single-player puzzle game. This policy explains what data the game handles.
 
@@ -13,8 +13,8 @@ uninstall the game.
 
 ## Data we collect
 
-The current version of Signal Shift collects **no personal data**, has no user accounts, no analytics,
-and makes no network requests of its own.
+Signal Shift itself collects **no personal data** and has no user accounts or analytics. The only network
+activity is the advertising described below, which is provided by Google AdMob.
 
 ## Purchases
 
@@ -23,14 +23,18 @@ We never receive your payment details. The game only receives confirmation of wh
 
 ## Advertising
 
-The current version shows no ads. If a future version adds optional rewarded videos, they will only play
-when you choose to watch one, and this policy will be updated to name the ad provider and the data it
-collects (such as device advertising identifiers) before that version is released. Where required, the
-game will ask for your consent first.
+The game shows ads served by Google AdMob: optional rewarded videos that play when you choose to watch one
+for a hint, and, for players without the Supporter Pass, an occasional unrewarded ad break between puzzles.
+To serve and measure ads, Google AdMob may collect and use device identifiers (such as your advertising ID),
+IP address, device and app information and ad interactions. See Google's policy at
+https://policies.google.com/technologies/partner-sites. You can reset or limit your advertising ID in your
+device settings. Where required (for example in the EEA and UK), the game asks for your consent first.
+The Supporter Pass removes ad breaks.
 
 ## Children
 
-The game is suitable for all ages and does not knowingly collect data from anyone, including children.
+The game contains no violence or mature content, but it is not directed at children under 13 and does not
+knowingly collect personal data from them.
 
 ## Contact
 

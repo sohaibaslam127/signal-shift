@@ -4,7 +4,24 @@ extends RefCounted
 ## `draw_icon` draws `name` centred on `c` inside a circle of radius `r`.
 
 
+## Per-icon nudge (fraction of r) that puts each drawing's bounding box on the requested centre.
+## Measured by rendering every icon and comparing its pixel bounds with the centre point.
+## Play and back are left alone: their triangular/arrow shapes read as centred when their mass is.
+const OPTICAL_OFFSET := {
+	&"music": Vector2(-0.13, 0.12),
+	&"gift": Vector2(0.0, 0.08),
+	&"star": Vector2(0.0, 0.055),
+	&"undo": Vector2(0.115, -0.075),
+	&"sound": Vector2(-0.045, 0.0),
+	&"reset": Vector2(0.03, -0.02),
+	&"hint": Vector2(0.0, 0.035),
+	&"chevron": Vector2(-0.07, 0.0),
+	&"shield": Vector2(0.0, -0.015),
+}
+
+
 static func draw_icon(ci: CanvasItem, name: StringName, c: Vector2, r: float, color: Color) -> void:
+	c += Vector2(OPTICAL_OFFSET.get(name, Vector2.ZERO)) * r
 	var w := maxf(3.0, r * 0.26)
 	match name:
 		&"back":

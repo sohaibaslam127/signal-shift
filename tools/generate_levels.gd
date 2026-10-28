@@ -366,7 +366,27 @@ func _build_pack(pack_id: String, pack_seed: int, specs: Array[Dictionary], name
 			_failures.append_array(errors)
 			continue
 		puzzles.append(puzzle)
+	_apply_slices(pack_id, puzzles)
 	return puzzles
+
+
+## Hand-authored puzzles (tools/slices/<pack>.json) replace the first generated levels of a pack,
+## so each premium pack opens with a level that teaches its own mechanic.
+func _apply_slices(pack_id: String, puzzles: Array[PuzzleData]) -> void:
+	var path := "res://tools/slices/%s.json" % pack_id
+	if not FileAccess.file_exists(path):
+		return
+	var slices: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	if typeof(slices) != TYPE_ARRAY:
+		_failures.append("%s: slices file is not an array" % pack_id)
+		return
+	for i in mini((slices as Array).size(), puzzles.size()):
+		var slice := PuzzleData.from_dict(slices[i])
+		var errors := PuzzleValidator.validate(slice)
+		if not errors.is_empty():
+			_failures.append_array(errors)
+			continue
+		puzzles[i] = slice
 
 
 func _design(spec: Dictionary, base_seed: int, puzzle_id: String, designer: Callable) -> PuzzleData:

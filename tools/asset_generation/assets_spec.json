@@ -1,0 +1,45 @@
+{
+	"model": "black-forest-labs/flux.1-schnell",
+	"style_suffix": "no text, no letters, no watermark, no logo",
+	"assets": [
+		{"id": "overclock_background", "pack": "overclock", "kind": "backgrounds", "file": "background.png", "width": 768, "height": 1344,
+		 "purpose": "In-game backdrop; keep the centre low-detail behind the board.",
+		 "prompt": "Minimalist precision line-routing puzzle game background, near-black, thin crisp cyan and white luminous geometric lines, precise angular paths, clean isolated nodes, subtle controlled glow, high contrast, premium technical interface, large calm empty centre, no realistic PCB texture"},
+		{"id": "overclock_cover", "pack": "overclock", "kind": "illustrations", "file": "cover.png", "width": 1024, "height": 1024,
+		 "purpose": "Pack cover artwork.",
+		 "prompt": "Minimalist precision line-routing puzzle artwork, near-black background, a single glowing cyan and white path of sharp right-angle and diagonal lines ending in a bright node, controlled glow, premium technical look, centered composition"},
+		{"id": "overclock_glow", "pack": "overclock", "kind": "effects", "file": "glow.png", "width": 512, "height": 512,
+		 "purpose": "Soft particle/glow sprite.",
+		 "prompt": "A soft round cyan-white glow particle on pure black background, smooth radial falloff, centered, nothing else"},
+
+		{"id": "logic_gates_background", "pack": "logic_gates", "kind": "backgrounds", "file": "background.png", "width": 768, "height": 1344,
+		 "purpose": "In-game backdrop; keep the centre low-detail behind the board.",
+		 "prompt": "Clean digital logic laboratory game background, Boolean logic diagram aesthetic, faint gate-shaped outlines and organized input and output nodes, clean technical vector styling, deep navy background, restrained blue and green illumination, sharp edges, large calm empty centre"},
+		{"id": "logic_gates_cover", "pack": "logic_gates", "kind": "illustrations", "file": "cover.png", "width": 1024, "height": 1024,
+		 "purpose": "Pack cover artwork.",
+		 "prompt": "Digital logic laboratory artwork, glowing blue and green logic gate silhouettes connected by clean wires with input switches, deep navy background, precise vector styling, centered composition"},
+		{"id": "logic_gates_glow", "pack": "logic_gates", "kind": "effects", "file": "glow.png", "width": 512, "height": 512,
+		 "purpose": "Soft particle/glow sprite.",
+		 "prompt": "A soft round blue-green glow particle on pure black background, smooth radial falloff, centered, nothing else"},
+
+		{"id": "circuit_breaker_background", "pack": "circuit_breaker", "kind": "backgrounds", "file": "background.png", "width": 768, "height": 1344,
+		 "purpose": "In-game backdrop; keep the centre low-detail behind the board.",
+		 "prompt": "Detailed electrical repair workshop game background, damaged green printed circuit board, copper traces, broken wire ends, exposed solder joints, scorched fuse, industrial diagnostic markings, top-down, controlled amber and red fault lighting, dark and low contrast in the centre"},
+		{"id": "circuit_breaker_cover", "pack": "circuit_breaker", "kind": "illustrations", "file": "cover.png", "width": 1024, "height": 1024,
+		 "purpose": "Pack cover artwork.",
+		 "prompt": "Electrical repair puzzle artwork, damaged circuit board close-up, snapped copper trace with sparks, blown glass fuse, amber and red warning light, realistic but readable top-down composition, centered"},
+		{"id": "circuit_breaker_glow", "pack": "circuit_breaker", "kind": "effects", "file": "glow.png", "width": 512, "height": 512,
+		 "purpose": "Soft spark/glow sprite.",
+		 "prompt": "A soft round warm amber spark glow on pure black background, smooth radial falloff, centered, nothing else"},
+
+		{"id": "quantum_protocol_background", "pack": "quantum_protocol", "kind": "backgrounds", "file": "background.png", "width": 768, "height": 1344,
+		 "purpose": "In-game backdrop; keep the centre low-detail behind the board.",
+		 "prompt": "Premium futuristic science-fiction network puzzle background, holographic hexagonal grid, floating luminous nodes, cyan and violet energy paths, faint portal rings, transparent interface panels, elegant dark indigo atmosphere, calm dark centre"},
+		{"id": "quantum_protocol_cover", "pack": "quantum_protocol", "kind": "illustrations", "file": "cover.png", "width": 1024, "height": 1024,
+		 "purpose": "Pack cover artwork.",
+		 "prompt": "Futuristic quantum network artwork, two glowing portal rings linked by streams of cyan and violet particles, holographic hexagonal nodes, dark indigo background, elegant clean composition, centered"},
+		{"id": "quantum_protocol_glow", "pack": "quantum_protocol", "kind": "effects", "file": "glow.png", "width": 512, "height": 512,
+		 "purpose": "Soft particle/glow sprite.",
+		 "prompt": "A soft round violet-cyan glow particle on pure black background, smooth radial falloff, centered, nothing else"}
+	]
+}

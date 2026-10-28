@@ -8,3 +8,6 @@
 *.jks
 *.p12
 *.mobileprovision
+
+.env.local
+tools/asset_generation/staging/

@@ -4,7 +4,7 @@
 	"description": "Sixty circuits built around the AND gate: wire both inputs before the signal can pass.",
 	"chapters": [{"levels":60,"title":"Logic Gates"}],
 	"puzzles": [
-		{"id":"g01","name":"Logic Gates 1","rows":[". . I1 . L1",". . L0 . .",". . L3 S3* .",". D1* G2* . .",". . L2 S3* ."],"solution":["00101","00000","00130","01200","00030"],"par":4},
+		{"id":"g01","name":"Odd One Out","rows":[". W1 L2* .",". . Y0* D3*",". W1 L3* ."],"solution":["0120","0003","0030"],"par":1,"rules":"logic","tip":"XOR lights only when exactly one input is on. Tap a switch to flip it."},
 		{"id":"g02","name":"Logic Gates 2","rows":["D1* L3 S2* . .","L2 G3* L1 . .","S0* . . . .",". . . . .",". . . . ."],"solution":["12200","13300","00000","00000","00000"],"par":8},
 		{"id":"g03","name":"Logic Gates 3","rows":[". L0 S3* . .","L2 G2* . I3 .","D0* S0* . . .",". L1 . . I2",". . . . ."],"solution":["01300","12030","00000","01002","00000"],"par":4},
 		{"id":"g04","name":"Logic Gates 4","rows":["L0 L3 . . I0",". . I0 I3 .",". . D2* . .",". . I1 S2* L3",". S1* G3* L0 ."],"solution":["03000","00030","00200","00023","01330"],"par":4},

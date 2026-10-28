@@ -24,7 +24,8 @@ Items marked **(needs owner)** require accounts, credentials or hardware that ar
 	  ("no data collected" while no ad SDK is integrated).
 - [ ] App Store Connect: app record, age rating, App Privacy ("Data Not Collected" while no ad SDK).
 - [ ] Privacy policy URL: host `docs/PRIVACY_POLICY.md` publicly and set `signal_shift/privacy_policy_url`.
-- [ ] Store listing text and graphics from `docs/STORE_LISTING.md`.
+- [ ] Store listing text, graphics, 6 screenshots, declarations and product list from `docs/STORE_LISTING.md`
+	  (read its "Release blockers" section first: billing adapter, real AdMob IDs, consent flow).
 - [ ] In-app products `pack_overclock` and `supporter` (non-consumable) — only once a billing adapter ships (see `docs/PLUGIN_INTEGRATION.md`).
 
 ## Build

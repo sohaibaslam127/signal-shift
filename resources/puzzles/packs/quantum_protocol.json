@@ -4,7 +4,7 @@
 	"description": "Sixty advanced circuits: splitters and relays synchronize multiple outputs, and every move counts.",
 	"chapters": [{"levels":60,"title":"Quantum Protocol"}],
 	"puzzles": [
-		{"id":"q01","name":"Quantum Protocol 1","rows":["L3 G1* S3* L2 . X1","I1 D0* . L1 . X1","S0* . L1 X0 L1* I2",". T3* . T0 . T2",". X3* . . . L3","T1 . I1 . . I2"],"solution":["113201","000101","001012","030002","030003","101002"],"par":3,"move_limit":9},
+		{"id":"q01","name":"Phase Shift","rows":["S1* I0 P0* . Q0",". . . . V1",". . . D0 P0*"],"solution":["11002","00000","00010"],"par":5,"rules":"quantum","tip":"Portals teleport the signal. The ringed target needs the inverted phase."},
 		{"id":"q02","name":"Quantum Protocol 2","rows":[". L0 S3* L0 D3* .","L1 G0* I1* L2 L3 .","L0 L0 I1 S3* . .",". I1 . L0 I3 T1",". . I3 . . .","L1 . . . . ."],"solution":["013130","101330","001300","010031","003000","100000"],"par":3,"move_limit":9},
 		{"id":"q03","name":"Quantum Protocol 3","rows":["S1* I2 L1 S2* . .",". L2 G2* I1 . .",". D0* L1 L3* . .",". . . . T0 L0",". . T2 . . .",". I3 T1 . . ."],"solution":["112200","012000","000300","000000","002000","031000"],"par":9,"move_limit":15},
 		{"id":"q04","name":"Quantum Protocol 4","rows":[". T2 X3 L1 . .","D2* . L1 . . .","I0 T2 . . . T3","L1 L3 I2 L2 S3* .","L0 G3* I1* L0 . I1","L3 S3* . . I1 ."],"solution":["023100","201000","020003","022130","131301","030010"],"par":14,"move_limit":20},

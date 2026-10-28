@@ -8,6 +8,8 @@ var height: int = 0
 var types: PackedByteArray = PackedByteArray()
 var rotations: PackedByteArray = PackedByteArray()
 var fixed: PackedByteArray = PackedByteArray()
+## Rule set that decides connectivity and winning ("classic", "logic", "repair", "quantum").
+var rules: String = "classic"
 
 
 func _init(board_width: int = 0, board_height: int = 0) -> void:
@@ -71,6 +73,34 @@ func can_rotate(index: int) -> bool:
 	return not is_fixed(index) and TileTypes.has_orientation(types[index])
 
 
+## True when a tap changes the board: rotatable tiles, switches, and wires still to repair.
+func can_tap(index: int) -> bool:
+	if can_rotate(index):
+		return true
+	if index < 0 or index >= cell_count() or is_fixed(index):
+		return false
+	match types[index]:
+		TileTypes.Type.SWITCH:
+			return true
+		TileTypes.Type.BROKEN:
+			return rotations[index] < 2
+	return false
+
+
+## Applies a player tap: rotate, toggle a switch, or repair a broken wire. Returns false if nothing changed.
+func tap(index: int) -> bool:
+	if not can_tap(index):
+		return false
+	match types[index]:
+		TileTypes.Type.SWITCH:
+			rotations[index] = 1 - rotations[index]
+		TileTypes.Type.BROKEN:
+			rotations[index] += 2
+		_:
+			rotations[index] = (rotations[index] + 1) % 4
+	return true
+
+
 ## Rotates a tile 90° clockwise. Returns false (and changes nothing) if the tile cannot rotate.
 func rotate_cw(index: int) -> bool:
 	if not can_rotate(index):
@@ -103,4 +133,5 @@ func duplicate_board() -> BoardState:
 	copy.types = types.duplicate()
 	copy.rotations = rotations.duplicate()
 	copy.fixed = fixed.duplicate()
+	copy.rules = rules
 	return copy

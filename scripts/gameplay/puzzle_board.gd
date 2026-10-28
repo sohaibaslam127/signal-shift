@@ -25,10 +25,8 @@ var _tray := StyleBoxFlat.new()
 func _ready() -> void:
 	resized.connect(_layout)
 	_tray.bg_color = Color(Palette.BOARD_TRAY, 0.92)
-	_tray.border_color = Color(Palette.CIRCUIT, 0.22)
 	_tray.set_border_width_all(2)
 	_tray.set_corner_radius_all(34)
-	_tray.shadow_color = Color(Palette.CIRCUIT, 0.10)
 	_tray.shadow_size = 36
 	_tray.anti_aliasing = true
 
@@ -39,7 +37,13 @@ func _draw() -> void:
 	draw_style_box(_tray, _grid_rect.grow(TRAY_PADDING))
 
 
+func _apply_theme() -> void:
+	_tray.border_color = Color(PackTheme.current.tray_border, 0.3)
+	_tray.shadow_color = Color(PackTheme.current.tray_border, 0.10)
+
+
 func bind(puzzle_controller: PuzzleController) -> void:
+	_apply_theme()
 	if controller != null:
 		controller.board_changed.disconnect(_on_board_changed)
 		controller.tap_rejected.disconnect(_on_tap_rejected)
@@ -61,7 +65,8 @@ func _build() -> void:
 	for i in board.cell_count():
 		var tile: CircuitTile = TILE_SCENE.instantiate()
 		add_child(tile)
-		tile.setup(i, board.get_type(i), board.connections_at(i), board.is_fixed(i), TileTypes.gate_output_bit(board.get_type(i), board.get_rotation(i)))
+		tile.setup(i, board.get_type(i), board.connections_at(i), board.is_fixed(i), TileTypes.directed_output_bit(board.get_type(i), board.get_rotation(i)))
+		tile.set_state(board.get_rotation(i))
 		tile.interactive = interactive
 		tile.tapped.connect(_on_tile_tapped)
 		_tiles.append(tile)
@@ -122,11 +127,14 @@ func _refresh(changed_index: int, animate: bool) -> void:
 	for i in _tiles.size():
 		var tile := _tiles[i]
 		var mask := board.connections_at(i)
-		var gate_bit := TileTypes.gate_output_bit(board.get_type(i), board.get_rotation(i))
+		var gate_bit := TileTypes.directed_output_bit(board.get_type(i), board.get_rotation(i))
 		if i == changed_index:
 			tile.set_connections(mask, animate, gate_bit)
 		elif tile.connections != mask or tile.gate_output_bit != gate_bit:
 			tile.set_connections(mask, false, gate_bit)
+		tile.set_state(board.get_rotation(i))
+		if not result.phases.is_empty():
+			tile.set_phases(result.phases[i])
 		var is_powered := result.is_powered(i)
 		tile.set_powered(is_powered, solved)
 		if is_powered and _was_powered[i] == 0 and animate:

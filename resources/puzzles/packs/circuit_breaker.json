@@ -4,7 +4,7 @@
 	"description": "Sixty circuits built around broken wires and overloaded paths: every circuit routes power to multiple targets at once.",
 	"chapters": [{"levels":60,"title":"Circuit Breaker"}],
 	"puzzles": [
-		{"id":"b01","name":"Circuit Breaker 1","rows":["T3* I3 I3 L0 L2*","T1 T2 D1* L1 I1","# L1 I2 L2 I1","I1 S0* . I1 I1",". . T0 T1 L3*","I2 D1* I2 L3 ."],"solution":["33312","12130","01120","10000","00003","21130"],"par":12},
+		{"id":"b01","name":"Hot Wire","rows":["S1* B1 T1 I0 D3*",". . Z0* . .",". . . . ."],"solution":["13313","00000","00000"],"par":4,"rules":"repair","tip":"Tap a broken wire to repair it. Never power the red fault terminal."},
 		{"id":"b02","name":"Circuit Breaker 2","rows":["S1* I2 L1 I1 .",". # L0 I1* L3","D2* T2 L0 L0 T1","L3 I1 I2 L2 I0","T3 L2 T0 D1* L3*",". T0 L1* . L0"],"solution":["11210","00012","22012","01130","32013","00100"],"par":10},
 		{"id":"b03","name":"Circuit Breaker 3","rows":["L3 I1* L1 . T3","I0* L3 L2 . #","I1 D0* L2 L3 L2","I1 L3 L0 . L3","I1 L3 I1 I2 D3*","L0 T2 S3* L3* ."],"solution":["11203","01300","00232","03003","01113","03330"],"par":13},
 		{"id":"b04","name":"Circuit Breaker 4","rows":[". I3 L3 L2 .","S2* L1 L3* I1 .","L3 L2 L2 T2* I1","L1* . I0 I0 I3",". . I1 L2 L0","L3 # D0* . D0*"],"solution":["03120","21300","03121","10003","00002","30000"],"par":13},

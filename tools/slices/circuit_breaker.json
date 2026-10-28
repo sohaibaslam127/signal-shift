@@ -1,0 +1,5 @@
+[
+	{"id":"b01","name":"Hot Wire","rules":"repair","tip":"Tap a broken wire to repair it. Never power the red fault terminal.",
+	 "rows":["S1* B1 T1 I0 D3*",". . Z0* . .",". . . . ."],
+	 "solution":["13313","00000","00000"],"par":4}
+]

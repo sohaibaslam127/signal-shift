@@ -8,10 +8,14 @@ extends RefCounted
 ##     "rows": ["S1* I0 D3*"],     # tokens: type letter + rotation digit + optional "*" (fixed)
 ##     "solution": ["113"],        # one rotation digit per cell, row-major
 ##     "par": 1,                   # minimal taps to reach the stored solution
-##     "move_limit": 0             # 0 = unlimited
+##     "move_limit": 0,            # 0 = unlimited
+##     "rules": "classic",         # optional: classic | logic | repair | quantum
+##     "tip": ""                   # optional one-line instruction shown above the toolbar
 ##   }
 ## Tile letters: "." empty, "#" blocked, I straight, L corner, T three-way, X four-way,
-## S source, D destination. Blocked and empty cells take no rotation digit.
+## S source, D destination, G/O/Y/N AND/OR/XOR/NOT gate, A diode, W switch, B broken wire,
+## Z fault terminal, P portal, V phase inverter, Q phase destination. Stateful tiles keep their
+## state in the digit (switch 0/1, broken wire 0-1 broken / 2-3 repaired, portal pair id). Blocked and empty cells take no rotation digit.
 
 var id: String = ""
 var name: String = ""
@@ -23,6 +27,8 @@ var fixed: PackedByteArray = PackedByteArray()
 var solution: PackedByteArray = PackedByteArray()
 var par: int = 0
 var move_limit: int = 0
+var rules: String = "classic"
+var tip: String = ""
 ## Problems found while parsing. PuzzleValidator reports these alongside rule checks.
 var parse_errors: PackedStringArray = PackedStringArray()
 
@@ -41,6 +47,9 @@ static func from_dict(data: Variant) -> PuzzleData:
 	puzzle.name = str(dict.get("name", puzzle.id))
 	puzzle.par = int(dict.get("par", 0)) if typeof(dict.get("par")) in [TYPE_INT, TYPE_FLOAT] else 0
 	puzzle.move_limit = int(dict.get("move_limit", 0)) if typeof(dict.get("move_limit", 0)) in [TYPE_INT, TYPE_FLOAT] else 0
+
+	puzzle.rules = str(dict.get("rules", "classic"))
+	puzzle.tip = str(dict.get("tip", ""))
 
 	var rows: Variant = dict.get("rows", [])
 	if typeof(rows) != TYPE_ARRAY or (rows as Array).is_empty():
@@ -122,6 +131,10 @@ func to_dict() -> Dictionary:
 	var result := {"id": id, "name": name, "rows": rows, "solution": solution_rows, "par": par}
 	if move_limit > 0:
 		result["move_limit"] = move_limit
+	if rules != "classic":
+		result["rules"] = rules
+	if not tip.is_empty():
+		result["tip"] = tip
 	return result
 
 
@@ -130,6 +143,7 @@ func create_board() -> BoardState:
 	board.types = types.duplicate()
 	board.rotations = rotations.duplicate()
 	board.fixed = fixed.duplicate()
+	board.rules = rules
 	return board
 
 

@@ -31,6 +31,8 @@ func _ready() -> void:
 		puzzle = GameManager.continue_puzzle()
 		GameManager.current_puzzle = puzzle
 
+	PackTheme.set_current(puzzle.pack_id)
+	$Background.set("pack_themed", true)
 	controller.moves_changed.connect(_on_moves_changed)
 	controller.won.connect(_on_won)
 	controller.failed.connect(_on_failed)
@@ -53,7 +55,10 @@ func _ready() -> void:
 
 ## Onboarding for the first campaign levels: one line, gone once the level is solved.
 func _add_tutorial_tip(puzzle: PuzzleData) -> void:
-	if puzzle.pack_id != GameManager.CAMPAIGN_PACK_ID or puzzle.pack_index > 2 or SaveService.progress.is_completed(puzzle.id):
+	if SaveService.progress.is_completed(puzzle.id):
+		return
+	var authored := puzzle.tip
+	if authored.is_empty() and (puzzle.pack_id != GameManager.CAMPAIGN_PACK_ID or puzzle.pack_index > 2):
 		return
 	const TIPS := [
 		"Tap a tile to rotate it. Connect the glowing source to the ring.",
@@ -64,11 +69,15 @@ func _add_tutorial_tip(puzzle: PuzzleData) -> void:
 	tip.theme_type_variation = &"DimLabel"
 	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	tip.text = TIPS[puzzle.pack_index]
+	tip.text = authored if not authored.is_empty() else TIPS[puzzle.pack_index]
 	var column := _board.get_parent().get_parent()
 	column.add_child(tip)
 	column.move_child(tip, _board.get_parent().get_index() + 1)
 	controller.won.connect(func(_m: int, _s: int) -> void: tip.queue_free(), CONNECT_ONE_SHOT)
+
+
+func _exit_tree() -> void:
+	PackTheme.set_current("default")
 
 
 func handle_back() -> void:

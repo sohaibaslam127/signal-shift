@@ -46,6 +46,8 @@ func test_all_packs_validate() -> void:
 
 func test_logic_gates_use_the_gate_tile() -> void:
 	for puzzle in _load("logic_gates").puzzles:
+		if not puzzle.tip.is_empty():
+			continue  # hand-authored lesson level; see test_pack_rules
 		var counts := _count_types(puzzle)
 		assert_eq(int(counts.get(T.GATE_AND, 0)), 1, "%s has exactly one gate" % puzzle.id)
 		assert_eq(int(counts.get(T.SOURCE, 0)), 2, "%s has two sources feeding the gate" % puzzle.id)
@@ -53,6 +55,8 @@ func test_logic_gates_use_the_gate_tile() -> void:
 
 func test_quantum_protocol_uses_the_gate_tile() -> void:
 	for puzzle in _load("quantum_protocol").puzzles:
+		if not puzzle.tip.is_empty():
+			continue  # hand-authored lesson level; see test_pack_rules
 		var counts := _count_types(puzzle)
 		assert_eq(int(counts.get(T.GATE_AND, 0)), 1, "%s has exactly one gate" % puzzle.id)
 		assert_true(puzzle.has_move_limit(), "%s has a move limit" % puzzle.id)
@@ -60,6 +64,8 @@ func test_quantum_protocol_uses_the_gate_tile() -> void:
 
 func test_circuit_breaker_routes_to_multiple_targets() -> void:
 	for puzzle in _load("circuit_breaker").puzzles:
+		if not puzzle.tip.is_empty():
+			continue  # hand-authored lesson level; see test_pack_rules
 		assert_true(int(_count_types(puzzle).get(T.DESTINATION, 0)) >= 2, "%s has multiple destinations" % puzzle.id)
 
 

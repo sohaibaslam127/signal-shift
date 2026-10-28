@@ -6,6 +6,7 @@ extends Control
 signal closed
 
 const PRIVACY_URL_SETTING := "signal_shift/privacy_policy_url"
+const TERMS_URL_SETTING := "signal_shift/terms_url"
 
 @onready var _rows: VBoxContainer = %Rows
 @onready var _back: Button = %BackButton
@@ -27,10 +28,11 @@ func _ready() -> void:
 	_restore_button = _add_action(purchases, &"reset", Palette.WARNING, "Restore Purchases", "Re-sync previous unlocks & Supporter status", _on_restore)
 	var about := _add_section("About", &"shield", Palette.SUCCESS)
 	_add_action(about, &"shield", Palette.SUCCESS, "Privacy Policy", "How Signal Shift handles your data", _on_privacy)
+	_add_action(about, &"check", Palette.ACCENT.lightened(0.3), "Terms & Conditions", "The rules for playing, ads & purchases", _on_terms)
 	var version := Label.new()
 	version.theme_type_variation = &"DimLabel"
 	version.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	version.text = "Signal Shift v%s\nAll art and audio are original and generated in-game." % ProjectSettings.get_setting("application/config/version", "0.1.0")
+	version.text = "Signal Shift v%s" % ProjectSettings.get_setting("application/config/version", "0.1.0")
 	version.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_rows.add_child(version)
 
@@ -53,10 +55,16 @@ func handle_back() -> void:
 
 ## Adds a coloured section heading and returns the card that holds its rows.
 func _add_section(title: String, icon: StringName, color: Color) -> VBoxContainer:
+	if _rows.get_child_count() > 0:
+		var gap := Control.new()
+		gap.custom_minimum_size = Vector2(0, 8)
+		gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_rows.add_child(gap)
 	var heading := HBoxContainer.new()
 	heading.add_theme_constant_override("separation", 12)
+	heading.alignment = BoxContainer.ALIGNMENT_BEGIN
 	_rows.add_child(heading)
-	heading.add_child(_glyph(icon, color, 34))
+	heading.add_child(_glyph(icon, color, 30))
 	var label := Label.new()
 	label.theme_type_variation = &"CaptionLabel"
 	label.add_theme_color_override("font_color", color)
@@ -85,7 +93,10 @@ func _glyph(icon: StringName, color: Color, size: float) -> IconGlyph:
 ## Rows after the first in a card get a divider above them.
 func _add_row(card: VBoxContainer, icon: StringName, color: Color, title: String, description: String, trailing: Control = null) -> Label:
 	if card.get_child_count() > 0:
-		var divider := HSeparator.new()
+		var divider := ColorRect.new()
+		divider.custom_minimum_size = Vector2(0, 2)
+		divider.color = Color(Palette.PANEL_BORDER, 0.45)
+		divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		card.add_child(divider)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 20)
@@ -93,6 +104,8 @@ func _add_row(card: VBoxContainer, icon: StringName, color: Color, title: String
 	var tile := PanelContainer.new()
 	tile.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tile.custom_minimum_size = Vector2(84, 84)
+	# Stay square when a two-line description makes the row taller.
+	tile.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(color, 0.14)
 	style.border_color = Color(color, 0.35)
@@ -136,7 +149,7 @@ func _add_toggle(card: VBoxContainer, icon: StringName, color: Color, title: Str
 
 ## A tappable row: a transparent button covers it, so the whole row is the touch target.
 func _add_action(card: VBoxContainer, icon: StringName, color: Color, title: String, description: String, action: Callable) -> Button:
-	_add_row(card, icon, color, title, description, _glyph(&"chevron", Palette.TEXT_DIM, 28))
+	_add_row(card, icon, color, title, description)
 	var row := card.get_child(card.get_child_count() - 1) as Control
 	var button := Button.new()
 	button.flat = true
@@ -148,9 +161,17 @@ func _add_action(card: VBoxContainer, icon: StringName, color: Color, title: Str
 
 
 func _on_privacy() -> void:
-	var url: String = ProjectSettings.get_setting(PRIVACY_URL_SETTING, "")
+	_open_page(PRIVACY_URL_SETTING, "Privacy Policy", "Signal Shift stores your progress only on this device and collects no personal data.")
+
+
+func _on_terms() -> void:
+	_open_page(TERMS_URL_SETTING, "Terms & Conditions", "The Terms & Conditions are available at techbolic.com/games/signal-shift/terms when you are online.")
+
+
+func _open_page(setting: String, title: String, fallback: String) -> void:
+	var url: String = ProjectSettings.get_setting(setting, "")
 	if url.is_empty() or OS.shell_open(url) != OK:
-		_message("Privacy Policy", "Signal Shift stores your progress only on this device and collects no personal data.")
+		_message(title, fallback)
 
 
 func _on_restore() -> void:

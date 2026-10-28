@@ -34,7 +34,7 @@ func start(puzzle_data: PuzzleData) -> void:
 	move_limit = puzzle.move_limit
 	state = State.PLAYING
 	_undo_stack.clear()
-	_hint_order = SignalSolver.solve(puzzle.create_solution_board()).powered_order
+	_hint_order = _build_hint_order()
 	result = SignalSolver.solve(board)
 	board_changed.emit(-1, false)
 	moves_changed.emit(moves)
@@ -66,11 +66,11 @@ func extend_moves(extra: int) -> bool:
 func tap(index: int) -> bool:
 	if state != State.PLAYING:
 		return false
-	if not board.can_rotate(index):
+	if not board.can_tap(index):
 		tap_rejected.emit(index)
 		return false
 	_push_undo()
-	board.rotate_cw(index)
+	board.tap(index)
 	moves += 1
 	_after_move(index)
 	return true
@@ -104,7 +104,7 @@ func reset() -> void:
 ## Cell the next hint would fix, or -1 if the board already matches the solution path.
 func next_hint_cell() -> int:
 	for index in _hint_order:
-		if board.can_rotate(index) and board.connections_at(index) != TileTypes.connections(board.get_type(index), puzzle.solution[index]):
+		if board.can_tap(index) and TileTypes.state_differs(board.get_type(index), board.get_rotation(index), puzzle.solution[index]):
 			return index
 	return -1
 
@@ -124,6 +124,21 @@ func apply_hint() -> int:
 	hints_used += 1
 	_after_move(index)
 	return index
+
+
+## Cells in solution-path order, then every other cell, so tiles that must be switched off or left
+## unpowered (not on the path) still get hints.
+func _build_hint_order() -> PackedInt32Array:
+	var order := SignalSolver.solve(puzzle.create_solution_board()).powered_order
+	if puzzle.rules == "classic":
+		return order
+	var seen := {}
+	for index in order:
+		seen[index] = true
+	for index in board.cell_count():
+		if not seen.has(index):
+			order.append(index)
+	return order
 
 
 func _push_undo() -> void:

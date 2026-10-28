@@ -1,0 +1,5 @@
+[
+	{"id":"o01","name":"One Way","rules":"classic","tip":"Arrow tiles only pass signal in the direction they point. Turn them to match the route.",
+	 "rows":["S1* I0 A3 I0 L0",". . . . I0",". . . . D0*"],
+	 "solution":["11112","00000","00000"],"par":6}
+]
